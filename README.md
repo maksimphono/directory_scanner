@@ -6,3 +6,5 @@ Uses Python with Pillow and PlantUML under the hood
 Features:
 * Can also show size of each file and directory
 * Can apply a color to every node (directory or file) according to color-scale (from one color to another), color represents size of the object
+
+Usage: scandir /path/to/dir [-c=0x000-0xfff] [-t=0] /path/to/output/image

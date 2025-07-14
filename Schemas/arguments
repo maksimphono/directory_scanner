@@ -1,0 +1,3 @@
+-c  [string] color scale, determines color scale to paint objects, based on their sizes
+
+-t  [int] type of diagram, that will be used, by default [-t=0], mindmap diagram will be used
