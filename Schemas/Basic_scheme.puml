@@ -1,0 +1,16 @@
+@startuml
+title Basic scheme
+
+start
+: scan input, get arguments;
+: traverse given directory recursively using "os.walk" module;
+
+if (output path was specified) then (yes)
+  : call PlantUML (from python) to create a scheme, redirect it to the file by specified path;
+else (no)
+  : call PlantUML (from python) to create a scheme, redirect it to the stdout;
+  : show pick up the generated image from stdout and show it;
+endif
+
+end
+@enduml
