@@ -7,12 +7,13 @@ using namespace std;
 namespace fs = filesystem;
 
 namespace recursive_scan_ns {
-    typedef enum{DIR, FILE, SYMLINK, FIFO} EntryType;
+    typedef char EntryType;
+    EntryType FILE = 'f', DIR = 'd', SYMLINK = 'l', FIFO = 'p';
 
     typedef struct {
         uint8_t depth;
-        EntryType type;
         string name;
+        EntryType type;
     } PlantUMLEntry;
 
     PlantUMLEntry* createPlantUMLEntry(uint8_t depth, string name, EntryType type = FILE){
@@ -31,7 +32,7 @@ namespace recursive_scan_ns {
 
         plantUML_entries.push_back(*createPlantUMLEntry(0, path.filename(), DIR)); // first element in the stack is root
         try {
-            stack<int> entries_stack = stack<int>(); // stack, that will keep track of which directory I'm currently in, each element is an index of that directory in the 'plantUML_entries'
+            stack<uint> entries_stack = stack<uint>(); // stack, that will keep track of which directory I'm currently in, each element is an index of that directory in the 'plantUML_entries'
             entries_stack.push(0); // pushing root element
 
             for (auto entry = fs::recursive_directory_iterator(path); entry != fs::recursive_directory_iterator(); entry++) {
@@ -44,10 +45,12 @@ namespace recursive_scan_ns {
                     cout << "Entering directory " << plantUML_entries[plantUML_entries.size() - 1].name << "\n";
                     entries_stack.push(plantUML_entries.size() - 1); // record index of the parent directory (so the last element in the sequence)
                 } else while (depth < entries_stack.size()) {
+                    // exiting directory by popping entries from the stack
                     cout << "Exeting directory " << plantUML_entries.at(entries_stack.top()).name << "\n";
                     entries_stack.pop();
                 }
-                // write current element to the sequence (FILE initialy and by default)
+
+                // write current element to the sequence (type = FILE initialy and by default)
                 PlantUMLEntry* created_entry = createPlantUMLEntry(depth, currentPath.filename().string(), FILE);
 
                 if (fs::is_directory(currentPath)) { // if it's a directory
