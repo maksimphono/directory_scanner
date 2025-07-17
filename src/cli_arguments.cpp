@@ -31,8 +31,6 @@ using namespace std;
 */
 
 namespace cli_arguments_ns {
-    typedef enum {ASCII, JPG, PNG, SVG, PDF} OutputType;
-
     class ArgumentException : public exception {
     private:
         string _message;
@@ -49,20 +47,8 @@ namespace cli_arguments_ns {
         string* path;
         char type = 't'; // b | t
         char size_units = '\0'; // b | k | m | g
-        OutputType output_type = ASCII;
         string* output_path;
     } cli_arguments;
-
-    OutputType extract_output_file_type(string* output_path) {
-        // cout << output_path->substr(output_path->rfind(".") + 1) << endl;
-        const string ext = output_path->substr(output_path->rfind(".") + 1);
-
-        if (ext == "jpg" || ext == "jpeg") return JPG;
-        if (ext == "png") return PNG;
-        if (ext == "svg") return SVG;
-        if (ext == "pdf") return PDF;
-        return ASCII;
-    }
 
     const auto get_cli_arguments(int n_args, const char** v_args) {
         // method, that records all cli arguments directly from the main function
@@ -98,8 +84,7 @@ namespace cli_arguments_ns {
 
                     case 'o': // output path was specified
                         cli_arguments.output_path = new string(v_args[++i]);
-                        cli_arguments.output_type = extract_output_file_type(cli_arguments.output_path);
-                        cout << "Output: " << *cli_arguments.output_path << " Type: " << cli_arguments.output_type << endl;
+                        cout << "Output: " << *cli_arguments.output_path << endl;
                         break;
 
                     default:
