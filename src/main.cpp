@@ -52,6 +52,17 @@ MMMMMMMMMMMMMMMMW,             .,'......',;:cc;;;::,'';::;.                     
 MMMMMMMMMMMMMMMMl              .,'.   ...''',;;::,,,',;;'....                                       ,XMMMMMMMMMMM
 */
 
+/*
+    Basic workflow:
+    1) Create code for plantuml, write it to the string
+    2) Write resulting code to this command
+    $ echo "$1" | java -jar plantuml -pipe
+
+    Where $1 is the plantuml code
+
+    3) Execute this command
+*/
+
 struct {
     string* path;
     string* output_path;
