@@ -33,15 +33,14 @@ using namespace std;
 namespace cli_arguments_ns {
     typedef enum {ASCII, JPG, PNG, SVG, PDF} OutputType;
 
-    class AgrumentException : runtime_error {
-        string message;
+    class ArgumentException : public exception {
+    private:
+        string _message;
     public:
-        AgrumentException(const char* message) : runtime_error(message) {
-            this->message = string(message);
-        }
+        ArgumentException(const char* message) : _message(message) {}
 
-        const char* what() const noexcept override {
-            return this->message.c_str();
+        virtual const char* what() const noexcept override {
+            return this->_message.c_str();
         }
     };
 
@@ -84,7 +83,7 @@ namespace cli_arguments_ns {
                         cout << "Type: " << value << endl;
                         if (value != 'b' && value != 't')
                             // TODO: implement more informative error message
-                            throw AgrumentException("type (-t) argument must be set to 'b' (box) or 't' (tree)");
+                            throw ArgumentException("type (-t) argument must be set to 'b' (box) or 't' (tree)");
                         else
                             cli_arguments.type = value;
                         break;
@@ -105,11 +104,9 @@ namespace cli_arguments_ns {
 
                     default:
                         // TODO: implement more informative error message
-                        //throw exception(string("Unknown argument!!"));
-                        break;
+                        throw ArgumentException("Unknown argument!!");
                 }
             }
-            //cout << *raw_arguments[i] << " ";
         }
 
         cli_arguments.path = new string(v_args[1]);
