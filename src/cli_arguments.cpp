@@ -30,14 +30,20 @@ using namespace std;
         and save resulting schema as PDF into the file /path/to/output/schema.pdf
 */
 
-/*
-    TODO:
-    
-    1) 
-*/
-
 namespace cli_arguments_ns {
     typedef enum {ASCII, JPG, PNG, SVG, PDF} OutputType;
+
+    class AgrumentException : runtime_error {
+        string message;
+    public:
+        AgrumentException(const char* message) : runtime_error(message) {
+            this->message = string(message);
+        }
+
+        const char* what() const noexcept override {
+            return this->message.c_str();
+        }
+    };
 
     struct {
         // dedicated structure, that will store values of every arguments
@@ -47,6 +53,17 @@ namespace cli_arguments_ns {
         OutputType output_type = ASCII;
         string* output_path;
     } cli_arguments;
+
+    OutputType extract_output_file_type(string* output_path) {
+        // cout << output_path->substr(output_path->rfind(".") + 1) << endl;
+        const string ext = output_path->substr(output_path->rfind(".") + 1);
+
+        if (ext == "jpg" || ext == "jpeg") return JPG;
+        if (ext == "png") return PNG;
+        if (ext == "svg") return SVG;
+        if (ext == "pdf") return PDF;
+        return ASCII;
+    }
 
     const auto get_cli_arguments(int n_args, const char** v_args) {
         // method, that records all cli arguments directly from the main function
@@ -67,7 +84,7 @@ namespace cli_arguments_ns {
                         cout << "Type: " << value << endl;
                         if (value != 'b' && value != 't')
                             // TODO: implement more informative error message
-                            throw string("type (-t) argument must be set to 'b' (box) or 't' (tree)");
+                            throw AgrumentException("type (-t) argument must be set to 'b' (box) or 't' (tree)");
                         else
                             cli_arguments.type = value;
                         break;
@@ -81,12 +98,14 @@ namespace cli_arguments_ns {
                         break;
 
                     case 'o': // output path was specified
-                        cout << "Output: " << v_args[++i] << endl;
+                        cli_arguments.output_path = new string(v_args[++i]);
+                        cli_arguments.output_type = extract_output_file_type(cli_arguments.output_path);
+                        cout << "Output: " << *cli_arguments.output_path << " Type: " << cli_arguments.output_type << endl;
                         break;
 
                     default:
                         // TODO: implement more informative error message
-                        throw string("Unknown argument!!");
+                        //throw exception(string("Unknown argument!!"));
                         break;
                 }
             }
