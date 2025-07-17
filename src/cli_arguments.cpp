@@ -10,34 +10,90 @@ using namespace std;
     -b      boolean, if set - size of each object (in bytes) will be printed alonside the name
     -k      boolean, if set - size of each object (in kilobytes) will be printed alonside the nameboolean, if set - size of each object (in kilobytes) will be printed alonside the name
     -m      boolean, if set - size of each object (in megabytes) will be printed alonside the name
-    -g      boolean, if set - size of each object (in gigabytes) will be printed alonside the name
+    -g      boolean, if set - size of each object (in gigabytes) will be printed alonside the name    
     --color string of form "#xxx-#yyy"      color scale, which will be applyed to color the objects according to their sizes
         if value wan't specified, default "#00f-#f00" (blue-red) will be used
-    -o      string,     path to a file (.jpg, .png, .svg, .pdf) where resulting PlantUML schema will be drawn
+    -o      string,     path to a file (can be JPG, PNG, SVG, PDF or TXT for ascii-style scheme) where resulting PlantUML schema will be drawn, 
+        if file was provided without extension or extension is other than these, ASCII scheme will be written
 
     size will be shown only if corresponding argument (-b, -k, -m, -g) is passed
-    if output file isn't provided - resulting schema will be shown without saving
+    if output file wasn't provided - resulting schema will be shown as PNG image without saving
+    if same argument was provided with different values, only the last value will be used
+
+    Example:
+
+        $ main /path/to/dir -t b -k -m --color #ada-#f00 -o /path/to/output/schema.pdf
+
+        Will create box schema of /path/to/dir directory, 
+        specifying size of each object in megabytes, 
+        will apply color scale from #ada (min value) to #f00 (max value)
+        and save resulting schema as PDF into the file /path/to/output/schema.pdf
+*/
+
+/*
+    TODO:
+    
+    1) 
 */
 
 namespace cli_arguments_ns {
+    typedef enum {ASCII, JPG, PNG, SVG, PDF} OutputType;
+
     struct {
         // dedicated structure, that will store values of every arguments
         string* path;
-        char type; // b | t
-        char size_units;
+        char type = 't'; // b | t
+        char size_units = '\0'; // b | k | m | g
+        OutputType output_type = ASCII;
         string* output_path;
     } cli_arguments;
 
     const auto get_cli_arguments(int n_args, const char** v_args) {
         // method, that records all cli arguments directly from the main function
         string* raw_arguments[n_args - 1];
+        char value = 0;
 
-        for (uint8_t i = 0; i < n_args - 1; i++) {
-            raw_arguments[i] = new string(v_args[i + 1]);
+        for (uint8_t i = 2; i < n_args; i++) {
+            const char* raw_argument = v_args[i];
+            //string* raw_argument = new string(v_args[i + 1]);
+
+            if (raw_argument[0] == '-') {
+                // this is an argument declaration
+                switch (raw_argument[1]) {
+                    // checking the symbol, that comes after the '-'
+                    case 't': // type specified
+                        value = *v_args[++i];
+
+                        cout << "Type: " << value << endl;
+                        if (value != 'b' && value != 't')
+                            // TODO: implement more informative error message
+                            throw string("type (-t) argument must be set to 'b' (box) or 't' (tree)");
+                        else
+                            cli_arguments.type = value;
+                        break;
+
+                    case 'b':
+                    case 'k':
+                    case 'm':
+                    case 'g': // doing like that because all these case requies same logic (set of size units)
+                        cout << "Units: " << raw_argument[1] << endl;
+                        cli_arguments.size_units = raw_argument[1];
+                        break;
+
+                    case 'o': // output path was specified
+                        cout << "Output: " << v_args[++i] << endl;
+                        break;
+
+                    default:
+                        // TODO: implement more informative error message
+                        throw string("Unknown argument!!");
+                        break;
+                }
+            }
             //cout << *raw_arguments[i] << " ";
         }
-    
-        cli_arguments.path = raw_arguments[0];
+
+        cli_arguments.path = new string(v_args[1]);
     
         return &cli_arguments;
     }
