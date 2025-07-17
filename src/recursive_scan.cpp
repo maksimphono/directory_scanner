@@ -38,7 +38,7 @@ namespace recursive_scan_ns {
             for (auto entry = fs::recursive_directory_iterator(path); entry != fs::recursive_directory_iterator(); entry++) {
                 const fs::path currentPath = entry->path();
 
-                uint depth = entry.depth() + 1; // + 1 because root has depth 0
+                uint8_t depth = entry.depth() + 1; // + 1 because root has depth 0
 
                 if (depth > entries_stack.size()) {
                     // entered a directory
@@ -65,20 +65,10 @@ namespace recursive_scan_ns {
                 if (entries_stack.size()) {
                     cout << plantUML_entries[entries_stack.size() - 1].name << " " << entries_stack.size() << endl;
                 }
-/*
-                if (fs::is_directory(currentPath)) { // if it's a directory
-                    cout << "[DIR] " << currentPath.filename().string() << " " << entry.depth() << endl;
-                }
-                else if (fs::is_regular_file(currentPath)) { // if it's a file
-                    cout << "[FILE] " << currentPath.filename().string() << " " << entry.depth() << endl;
-                } else {
-                    cout << "[OBJ] " << currentPath.string() << " " << entry.depth() << endl;
-                }
-*/
             }
             cout << "Got:\n";
             for (const auto& elem : plantUML_entries) {
-                cout << elem.name << " " << elem.type << " ";
+                cout << elem.name << " " << elem.type << ":" << (uint)elem.depth << " ";
             }
             return &plantUML_entries;
 
@@ -87,5 +77,6 @@ namespace recursive_scan_ns {
         } catch (const exception& e) {
             cerr << "General error: " << e.what() << endl;
         }
+        return &plantUML_entries;
     }
 }
