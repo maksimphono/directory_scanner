@@ -22,13 +22,13 @@ namespace recursive_scan_ns {
 
     vector<PlantUMLEntry> plantUML_entries = vector<PlantUMLEntry>(); // array that conatins entries of plantUML strings, these will be directly printed to a file, that will be used by plantUML engine
 
-    void scan(string& root_path) {
+    vector<PlantUMLEntry>* scan(string& root_path) {
         const fs::path path = fs::path(root_path);
 
-        plantUML_entries.push_back(*createPlantUMLEntry(0, root_path));
+        plantUML_entries.push_back(*createPlantUMLEntry(0, path.filename())); // first element in the stack is root
         try {
             stack<int> entries_stack = stack<int>(); // stack, that will keep track of which directory I'm currently in, each element is an index of that directory in the 'plantUML_entries'
-            entries_stack.push(0); // first element in the stack is root
+            entries_stack.push(0); // pushing root element
 
             for (auto entry = fs::recursive_directory_iterator(path); entry != fs::recursive_directory_iterator(); entry++) {
                 const fs::path currentPath = entry->path();
@@ -38,11 +38,8 @@ namespace recursive_scan_ns {
                 if (depth > entries_stack.size()) {
                     // entered a directory
                     cout << "Entering directory " << plantUML_entries[plantUML_entries.size() - 1].name << "\n";
-                    entries_stack.push(plantUML_entries.size() - 1); // record pointer to the parent directory (so the last element in the sequence)
+                    entries_stack.push(plantUML_entries.size() - 1); // record index of the parent directory (so the last element in the sequence)
                 } else while (depth < entries_stack.size()) {
-                    //for (const auto& item : plantUML_entries) {
-                    //    cout << item.name << ", ";
-                    //}
                     cout << "Exeting directory " << plantUML_entries.at(entries_stack.top()).name << "\n";
                     entries_stack.pop();
                 }
@@ -50,6 +47,7 @@ namespace recursive_scan_ns {
                 PlantUMLEntry* created_entry = createPlantUMLEntry(depth, currentPath.filename().string());
                 plantUML_entries.push_back(*created_entry);
 
+                // print the top element in the stack
                 if (entries_stack.size()) {
                     cout << plantUML_entries[entries_stack.size() - 1].name << " " << entries_stack.size() << endl;
                 }
@@ -62,7 +60,14 @@ namespace recursive_scan_ns {
                 } else {
                     cout << "[OBJ] " << currentPath.string() << " " << entry.depth() << endl;
                 }
+
+                cout << "Got:\n";
+                for (const auto& elem : plantUML_entries) {
+                    cout << elem.name << " ";
+                }
             }
+            return &plantUML_entries;
+
         } catch (const fs::filesystem_error& e) {
             cerr << "Filesystem error: " << e.what() << endl;
         } catch (const exception& e) {
