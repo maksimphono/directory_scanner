@@ -4,9 +4,12 @@
 
 #include "cli_arguments.cpp"
 #include "recursive_scan.cpp"
+//#include "plantuml_schema.cpp"
 
 using namespace cli_arguments_ns;
 using namespace std;
+using namespace recursive_scan_ns;
+//using namespace plantuml_schema_ns;
 
 /*
  _   _                                          _                 _     ___ 
@@ -68,11 +71,12 @@ struct {
     string* output_path;
 } cli_arguments;
 
-
 int main(int n_args, const char** v_args) {
     try {
-        const auto args = get_cli_arguments(n_args, v_args);
+        const auto* args = get_cli_arguments(n_args, v_args);
         cout << "\n" << *args->path;
+        vector<recursive_scan_ns::PlantUMLEntry>* seq = scan(*args->path);
+        //create_schema(seq, args);
     } catch(const exception& exp) {
         // gracefully exiting with error
         cerr << exp.what() << endl;
