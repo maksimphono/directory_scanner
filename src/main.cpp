@@ -73,7 +73,7 @@ struct {
 
 int main(int n_args, const char** v_args) {
     try {
-        const auto* args = get_cli_arguments(n_args, v_args);
+        cli_arguments_ns::CliArguments* args = get_cli_arguments(n_args, v_args);
         cout << "\n" << *args->path;
         vector<recursive_scan_ns::PlantUMLEntry>* seq = scan(*args->path);
         //create_schema(seq, args);

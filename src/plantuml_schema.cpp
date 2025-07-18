@@ -1,6 +1,7 @@
 #include <format>
 #include <iostream>
 #include <string>
+#include "cli_arguments.cpp"
 #include "recursive_scan.cpp"
 
 using namespace recursive_scan_ns;
@@ -44,16 +45,16 @@ namespace plantuml_schema_ns {
         cout << "Created schema_arguments: " << schema_arguments.output_type << " " << schema_arguments.size_units << endl;
     }
 
-    void create_schema(vector<PlantUMLEntry>& sequence, auto& cli_arguments) {
+    void create_schema(vector<PlantUMLEntry>& sequence, cli_arguments_ns::CliArguments* cli_arguments) {
         // must create a stream, where the plantuml code will be written, 
         // after that this code will be used within the bash script: "echo $1 | java -jar plantuml -pipe"
 
         get_schema_arguments(cli_arguments); // creates schema_arguments from cli_arguments
 
         if (schema_arguments.schema_type == TREE) {
-            create_tree_schema(sequence)
+            create_tree_schema(sequence);
         } else if (schema_arguments.schema_type == BOX) {
-            create_box_schema(sequence)
+            create_box_schema(sequence);
         }
     }
 
