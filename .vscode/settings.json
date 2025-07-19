@@ -5,6 +5,7 @@
         "iostream": "cpp",
         "string_view": "cpp",
         "filesystem": "cpp",
-        "sstream": "cpp"
+        "sstream": "cpp",
+        "ostream": "cpp"
     }
 }
