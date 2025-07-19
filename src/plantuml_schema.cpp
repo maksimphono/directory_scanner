@@ -21,26 +21,27 @@ namespace plantuml_schema_ns {
 
             // here must be logic, that creates format for each created string
             // and gather overall informationfrom the sequence of entries
+            if (schema_arguments.show_size) {
+                this->string_format = "{0} ({1} {2})";
+            }
         }
         string construct_plantUML_string(const recursive_scan_ns::PlantUMLEntry& entry) {
             string plantuml_string = string();
-            //constexpr const char* string_format = (const char*)this->string_format.c_str();
 
             plantuml_string.assign(entry.depth + 1, '*');
             plantuml_string += " ";
-            plantuml_string += vformat(this->string_format, make_format_args(entry.name, entry.type)); // was forced to do so, using regular std::format the same way as in the documentation (https://en.cppreference.com/w/cpp/utility/format/format.html) produce error "...`string_format` is not a constant expression...", idk why
+            plantuml_string += vformat(this->string_format, make_format_args(entry.name)); // was forced to do so, using regular std::format the same way as in the documentation (https://en.cppreference.com/w/cpp/utility/format/format.html) produce error "...`string_format` is not a constant expression...", idk why
 
             return plantuml_string;
         }
         void print(ostream& stream) override {
             // will output entire plantuml code into the provided stream
-            string plantuml_string = "";
-
             for (const auto& plantuml_entry : this->sequence) {
                 // TODO: complete this loop, that writes plantuml entries from sequence to the stream
-                plantuml_string = this->construct_plantUML_string(plantuml_entry);
 
-                stream << plantuml_string << endl;
+                stream
+                    << this->construct_plantUML_string(plantuml_entry)
+                    << endl;
             }
         }
     };
