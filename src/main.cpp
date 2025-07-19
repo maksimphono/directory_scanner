@@ -2,9 +2,9 @@
 //#include <string>
 //#include <cstdint>
 
-#include "cli_arguments.hpp"
-#include "recursive_scan.hpp"
-#include "plantuml_schema.hpp"
+#include "include/cli_arguments.hpp"
+#include "include/recursive_scan.hpp"
+#include "include/plantuml_schema.hpp"
 
 //using namespace cli_arguments_ns;
 //using namespace recursive_scan_ns;
