@@ -1,14 +1,14 @@
-#include <iostream>
-#include <string>
-#include <cstdint>
+//#include <iostream>
+//#include <string>
+//#include <cstdint>
 
-#include "Head/cli_arguments.hpp"
-#include "Head/recursive_scan.hpp"
-#include "Head/plantuml_schema.hpp"
+#include "cli_arguments.hpp"
+#include "recursive_scan.hpp"
+#include "plantuml_schema.hpp"
 
-using namespace cli_arguments_ns;
-using namespace recursive_scan_ns;
-using namespace plantuml_schema_ns;
+//using namespace cli_arguments_ns;
+//using namespace recursive_scan_ns;
+//using namespace plantuml_schema_ns;
 
 // TODO: fix problem with ambigous implementation due to mess in included files
 
@@ -69,10 +69,10 @@ MMMMMMMMMMMMMMMMl              .,'.   ...''',;;::,,,',;;'....                   
 
 int main(int n_args, const char** v_args) {
     try {
-        cli_arguments_ns::CliArguments* args = get_cli_arguments(n_args, v_args);
+        cli_arguments_ns::CliArguments* args = cli_arguments_ns::get_cli_arguments(n_args, v_args);
         cout << "\n" << *args->path;
-        vector<recursive_scan_ns::PlantUMLEntry>& seq = *scan(*args->path);
-        create_schema(seq, args);
+        vector<recursive_scan_ns::PlantUMLEntry>& seq = *recursive_scan_ns::scan(*args->path);
+        plantuml_schema_ns::create_schema(seq, args);
     } catch(const exception& exp) {
         // gracefully exiting with error
         cerr << exp.what() << endl;

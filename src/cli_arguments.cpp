@@ -2,7 +2,7 @@
 #include <string>
 #include <cstdint>
 
-#include "Head/cli_arguments.hpp"
+#include "cli_arguments.hpp"
 using namespace std;
 
 /*
@@ -16,7 +16,9 @@ using namespace std;
     --color string of form "#xxx-#yyy"      color scale, which will be applyed to color the objects according to their sizes
         if value wan't specified, default "#00f-#f00" (blue-red) will be used
     -o      string,     path to a file (can be JPG, PNG, SVG, PDF or TXT for ascii-style scheme) where resulting PlantUML schema will be drawn, 
-        if file was provided without extension or extension is other than these, ASCII scheme will be written
+        if file was provide {
+            return this->_message.c_str();
+        }d without extension or extension is other than these, ASCII scheme will be written
 
     size will be shown only if corresponding argument (-b, -k, -m, -g) is passed
     if output file wasn't provided - resulting schema will be shown as PNG image without saving
@@ -43,6 +45,7 @@ namespace cli_arguments_ns {
             return this->_message.c_str();
         }
     };
+    CliArguments cli_arguments;
 
     CliArguments* get_cli_arguments(int n_args, const char** v_args) {
         // method, that records all cli arguments directly from the main function

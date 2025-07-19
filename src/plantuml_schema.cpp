@@ -1,7 +1,7 @@
 #include <format>
 #include <iostream>
 #include <string>
-#include "Head/plantuml_schema.hpp"
+#include "plantuml_schema.hpp"
 
 //using namespace ;
 using namespace std;
@@ -43,11 +43,9 @@ namespace plantuml_schema_ns {
         if (schema_arguments.schema_type == TREE) {
             create_tree_schema(sequence);
         } else if (schema_arguments.schema_type == BOX) {
-            create_box_schema(sequence);
+            //create_box_schema(sequence);
         }
     }
-
-    const string plantuml_string_format = "{0}";
 
     string* construct_plantUML_tree_string(const recursive_scan_ns::PlantUMLEntry& entry) {
         static string* plantuml_string = new string();
@@ -62,20 +60,25 @@ namespace plantuml_schema_ns {
         return plantuml_string;
     }
 
-    stringstream& create_tree_schema(vector<recursive_scan_ns::PlantUMLEntry>& sequence) {
-        stringstream plantUML_commands = stringstream();
+    void create_tree_schema(vector<recursive_scan_ns::PlantUMLEntry>& sequence) {
+        stringstream* plantUML_commands = new stringstream();
         string* plantuml_string = new string();
 
-        plantUML_commands << "@startmindmap";
+        *plantUML_commands << "@startmindmap";
 
+        return;
         for (const auto& plantuml_entry : sequence) {
             // TODO: complete this loop, that writes plantuml entries from sequence to the stream
             construct_plantUML_tree_string(plantuml_entry);
 
-            plantUML_commands << plantuml_entry.name;
+            *plantUML_commands << plantuml_entry.name;
         }
 
-        plantUML_commands << "@endmindmap";
-        return plantUML_commands;
+        *plantUML_commands << "@endmindmap";
+
+        cout << plantUML_commands->str();
+
+        delete plantUML_commands;
+        delete plantuml_string;
     }
 }

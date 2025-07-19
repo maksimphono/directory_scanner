@@ -33,15 +33,6 @@ using namespace std;
 */
 
 namespace cli_arguments_ns {
-    class ArgumentException : public exception {
-    private:
-        string _message;
-    public:
-        ArgumentException(const char* message);
-
-        const char* what() const noexcept override;
-    };
-
     typedef struct {
         // dedicated structure, that will store values of every arguments
         string* path;
@@ -49,7 +40,6 @@ namespace cli_arguments_ns {
         char size_units = '\0'; // b | k | m | g
         string* output_path;
     } CliArguments;
-    CliArguments cli_arguments;
 
-    CliArguments* get_cli_arguments(int n_args, const char** v_args);
+    CliArguments* get_cli_arguments(int , const char**);
 }
