@@ -2,14 +2,13 @@
 #include <string>
 #include <cstdint>
 
-#include "cli_arguments.cpp"
-#include "recursive_scan.cpp"
-//#include "plantuml_schema.cpp"
+#include "Head/cli_arguments.hpp"
+#include "Head/recursive_scan.hpp"
+#include "Head/plantuml_schema.hpp"
 
 using namespace cli_arguments_ns;
-using namespace std;
 using namespace recursive_scan_ns;
-//using namespace plantuml_schema_ns;
+using namespace plantuml_schema_ns;
 
 // TODO: fix problem with ambigous implementation due to mess in included files
 
@@ -68,17 +67,12 @@ MMMMMMMMMMMMMMMMl              .,'.   ...''',;;::,,,',;;'....                   
     3) Execute this command
 */
 
-struct {
-    string* path;
-    string* output_path;
-} cli_arguments;
-
 int main(int n_args, const char** v_args) {
     try {
         cli_arguments_ns::CliArguments* args = get_cli_arguments(n_args, v_args);
         cout << "\n" << *args->path;
-        vector<recursive_scan_ns::PlantUMLEntry>* seq = scan(*args->path);
-        //create_schema(seq, args);
+        vector<recursive_scan_ns::PlantUMLEntry>& seq = *scan(*args->path);
+        create_schema(seq, args);
     } catch(const exception& exp) {
         // gracefully exiting with error
         cerr << exp.what() << endl;
