@@ -11,14 +11,37 @@ namespace plantuml_schema_ns {
 
     class PlantUML_TreeSchema : public PlantUMLSchema {
     private:
-        string format;
+        string string_format;
+        vector<recursive_scan_ns::PlantUMLEntry>& sequence;
     public:
-        PlantUML_TreeSchema() {
-            this->format = string("");
+        PlantUML_TreeSchema(vector<recursive_scan_ns::PlantUMLEntry>& sequence) : sequence(sequence) {
+            this->string_format = "{0}";
+            //this->sequence = sequence;
             // TODO: create format based on the schema_arguments
+
+            // here must be logic, that creates format for each created string
+            // and gather overall informationfrom the sequence of entries
         }
-        void print() const override {
-            cout << "qwert";
+        string construct_plantUML_string(const recursive_scan_ns::PlantUMLEntry& entry) {
+            string plantuml_string = string();
+            //constexpr const char* string_format = (const char*)this->string_format.c_str();
+
+            plantuml_string.assign(entry.depth + 1, '*');
+            plantuml_string += " ";
+            plantuml_string += vformat(this->string_format, make_format_args(entry.name, entry.type)); // was forced to do so, using regular std::format the same way as in the documentation (https://en.cppreference.com/w/cpp/utility/format/format.html) produce error "...`string_format` is not a constant expression...", idk why
+
+            return plantuml_string;
+        }
+        void print(ostream& stream) override {
+            // will output entire plantuml code into the provided stream
+            string plantuml_string = "";
+
+            for (const auto& plantuml_entry : this->sequence) {
+                // TODO: complete this loop, that writes plantuml entries from sequence to the stream
+                plantuml_string = this->construct_plantUML_string(plantuml_entry);
+
+                stream << plantuml_string << endl;
+            }
         }
     };
 
@@ -35,16 +58,6 @@ namespace plantuml_schema_ns {
         return ASCII;
     }
 
-    // TODO: create a way of defining format of resulting PlantUML string in advance
-    string* create_plantuml_string_format() {
-        string* string_format = new string();
-        
-        if (schema_arguments.schema_type == TREE) {
-
-        }
-
-        return string_format;
-    }
     void get_schema_arguments(cli_arguments_ns::CliArguments* cli_arguments) {
         schema_arguments.path = string(*cli_arguments->path);
 
@@ -77,34 +90,16 @@ namespace plantuml_schema_ns {
         }
     }
 
-    string* construct_plantUML_tree_string(const recursive_scan_ns::PlantUMLEntry& entry) {
-        static string* plantuml_string = new string();
-
-        plantuml_string->assign(entry.depth + 1, '*');
-        *plantuml_string += " ";
-        *plantuml_string += format(plantuml_string_format, entry.name, entry.type);
-
-        return plantuml_string;
-    }
-
     void create_tree_schema(vector<recursive_scan_ns::PlantUMLEntry>& sequence) {
-        stringstream* plantUML_commands = new stringstream();
-        string* plantuml_string = nullptr;
+        stringstream plantUML_commands = stringstream();
+        PlantUML_TreeSchema schema = PlantUML_TreeSchema(sequence);
 
-        *plantUML_commands << "@startmindmap\n";
+        plantUML_commands << "@startmindmap\n";
 
-        for (const auto& plantuml_entry : sequence) {
-            // TODO: complete this loop, that writes plantuml entries from sequence to the stream
-            plantuml_string = construct_plantUML_tree_string(plantuml_entry);
+        schema.print(plantUML_commands);
 
-            *plantUML_commands << *plantuml_string << endl;
-        }
+        plantUML_commands << "@endmindmap\n";
 
-        *plantUML_commands << "@endmindmap\n";
-
-        cout << plantUML_commands->str();
-
-        delete plantUML_commands;
-        delete plantuml_string;
+        cout << plantUML_commands.str();
     }
 }

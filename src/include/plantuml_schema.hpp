@@ -16,7 +16,7 @@ namespace plantuml_schema_ns {
     class PlantUMLSchema {
     public:
         virtual ~PlantUMLSchema() {}
-        virtual void print() const = 0;
+        virtual void print(ostream& stream) = 0;
     };
 
     OutputType extract_output_file_type(string* output_path);
