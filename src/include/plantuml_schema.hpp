@@ -13,6 +13,12 @@ namespace plantuml_schema_ns {
     typedef enum {ASCII, JPG, PNG, SVG, PDF} OutputType;
     typedef enum {TREE, BOX} SchemaType;
 
+    class PlantUMLSchema {
+    public:
+        virtual ~PlantUMLSchema() {}
+        virtual void print() const = 0;
+    };
+
     OutputType extract_output_file_type(string* output_path);
 
     struct {

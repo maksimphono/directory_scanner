@@ -8,6 +8,20 @@
 using namespace std;
 
 namespace plantuml_schema_ns {
+
+    class PlantUML_TreeSchema : public PlantUMLSchema {
+    private:
+        string format;
+    public:
+        PlantUML_TreeSchema() {
+            this->format = string("");
+            // TODO: create format based on the schema_arguments
+        }
+        void print() const override {
+            cout << "qwert";
+        }
+    };
+
     OutputType extract_output_file_type(string* output_path) {
         // cout << output_path->substr(output_path->rfind(".") + 1) << endl;
         if (output_path == nullptr) return ASCII;
@@ -23,7 +37,13 @@ namespace plantuml_schema_ns {
 
     // TODO: create a way of defining format of resulting PlantUML string in advance
     string* create_plantuml_string_format() {
+        string* string_format = new string();
+        
+        if (schema_arguments.schema_type == TREE) {
 
+        }
+
+        return string_format;
     }
     void get_schema_arguments(cli_arguments_ns::CliArguments* cli_arguments) {
         schema_arguments.path = string(*cli_arguments->path);
