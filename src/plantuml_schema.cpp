@@ -22,6 +22,9 @@ namespace plantuml_schema_ns {
     }
 
     // TODO: create a way of defining format of resulting PlantUML string in advance
+    string* create_plantuml_string_format() {
+
+    }
     void get_schema_arguments(cli_arguments_ns::CliArguments* cli_arguments) {
         schema_arguments.path = string(*cli_arguments->path);
 
@@ -56,13 +59,10 @@ namespace plantuml_schema_ns {
 
     string* construct_plantUML_tree_string(const recursive_scan_ns::PlantUMLEntry& entry) {
         static string* plantuml_string = new string();
-        //static const char* string_format = "{0} ({1})";
 
         plantuml_string->assign(entry.depth + 1, '*');
         *plantuml_string += " ";
-        cout << "QWert";
-        //sprintf((char*)plantuml_string->c_str(), plantuml_string_format, );
-        *plantuml_string += format(plantuml_string_format, entry.name);
+        *plantuml_string += format(plantuml_string_format, entry.name, entry.type);
 
         return plantuml_string;
     }
