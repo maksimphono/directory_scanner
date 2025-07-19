@@ -35,10 +35,10 @@ using namespace std;
 namespace cli_arguments_ns {
     typedef struct {
         // dedicated structure, that will store values of every arguments
-        string* path;
+        string* path = nullptr;
         char type = 't'; // b | t
         char size_units = '\0'; // b | k | m | g
-        string* output_path;
+        string* output_path = nullptr;
     } CliArguments;
 
     CliArguments* get_cli_arguments(int , const char**);

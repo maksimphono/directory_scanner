@@ -10,8 +10,6 @@
 //using namespace recursive_scan_ns;
 //using namespace plantuml_schema_ns;
 
-// TODO: fix problem with ambigous implementation due to mess in included files
-
 /*
  _   _                                          _                 _     ___ 
 | \ | | ___    _ __   ___  _ __ _ __ ___   __ _| |   ___ ___   __| | __|__ \
