@@ -1,16 +1,12 @@
 #include <format>
 #include <iostream>
 #include <string>
-#include "cli_arguments.cpp"
-#include "recursive_scan.cpp"
+#include "Head/plantuml_schema.hpp"
 
-using namespace recursive_scan_ns;
+//using namespace ;
 using namespace std;
 
 namespace plantuml_schema_ns {
-    typedef enum {ASCII, JPG, PNG, SVG, PDF} OutputType;
-    typedef enum {TREE, BOX} SchemaType;
-
     OutputType extract_output_file_type(string* output_path) {
         // cout << output_path->substr(output_path->rfind(".") + 1) << endl;
         string ext = output_path->substr(output_path->rfind(".") + 1);
@@ -23,14 +19,6 @@ namespace plantuml_schema_ns {
     }
 
     // TODO: create a way of defining format of resulting PlantUML string in advance
-    struct {
-        string path;
-        SchemaType schema_type = TREE;
-        string size_units; // B | KB | MB | GB
-        OutputType output_type = ASCII;
-        string output_path;
-    } schema_arguments;
-
     void get_schema_arguments(cli_arguments_ns::CliArguments* cli_arguments) {
         schema_arguments.path = string(*cli_arguments->path);
         schema_arguments.output_path = string(*cli_arguments->output_path);
@@ -46,7 +34,7 @@ namespace plantuml_schema_ns {
         cout << "Created schema_arguments: " << schema_arguments.output_type << " " << schema_arguments.size_units << endl;
     }
 
-    void create_schema(vector<PlantUMLEntry>& sequence, cli_arguments_ns::CliArguments* cli_arguments) {
+    void create_schema(vector<recursive_scan_ns::PlantUMLEntry>& sequence, cli_arguments_ns::CliArguments* cli_arguments) {
         // must create a stream, where the plantuml code will be written, 
         // after that this code will be used within the bash script: "echo $1 | java -jar plantuml -pipe"
 
@@ -61,7 +49,7 @@ namespace plantuml_schema_ns {
 
     const string plantuml_string_format = "{0}";
 
-    string* construct_plantUML_tree_string(const PlantUMLEntry& entry) {
+    string* construct_plantUML_tree_string(const recursive_scan_ns::PlantUMLEntry& entry) {
         static string* plantuml_string = new string();
         //static const char* string_format = "{0} ({1})";
 
@@ -74,7 +62,7 @@ namespace plantuml_schema_ns {
         return plantuml_string;
     }
 
-    stringstream& create_tree_schema(vector<PlantUMLEntry>& sequence) {
+    stringstream& create_tree_schema(vector<recursive_scan_ns::PlantUMLEntry>& sequence) {
         stringstream plantUML_commands = stringstream();
         string* plantuml_string = new string();
 
@@ -89,8 +77,5 @@ namespace plantuml_schema_ns {
 
         plantUML_commands << "@endmindmap";
         return plantUML_commands;
-    }
-    void create_box_schema(vector<PlantUMLEntry>& sequence) {
-
     }
 }

@@ -2,20 +2,11 @@
 #include <stack>
 #include <vector>
 #include <filesystem>
-using namespace std;
+#include "Head/recursive_scan.hpp"
 
 namespace fs = filesystem;
 
 namespace recursive_scan_ns {
-    typedef char EntryType;
-    EntryType FILE = 'f', DIR = 'd', SYMLINK = 'l', FIFO = 'p';
-
-    typedef struct {
-        uint8_t depth;
-        string name;
-        EntryType type;
-    } PlantUMLEntry;
-
     PlantUMLEntry* createPlantUMLEntry(uint8_t depth, string name, EntryType type = FILE){
         PlantUMLEntry* created = new PlantUMLEntry;
         created->depth = depth;
@@ -24,8 +15,6 @@ namespace recursive_scan_ns {
 
         return created;
     }
-
-    vector<PlantUMLEntry> plantUML_entries = vector<PlantUMLEntry>(); // array that conatins entries of plantUML strings, these will be directly printed to a file, that will be used by plantUML engine
 
     vector<PlantUMLEntry>* scan(string& root_path) {
         const fs::path path = fs::path(root_path);

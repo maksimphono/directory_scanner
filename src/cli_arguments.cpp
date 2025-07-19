@@ -1,6 +1,8 @@
 #include <iostream>
 #include <string>
 #include <cstdint>
+
+#include "Head/cli_arguments.hpp"
 using namespace std;
 
 /*
@@ -37,21 +39,12 @@ namespace cli_arguments_ns {
     public:
         ArgumentException(const char* message) : _message(message) {}
 
-        virtual const char* what() const noexcept override {
+        const char* what() const noexcept override {
             return this->_message.c_str();
         }
     };
 
-    typedef struct {
-        // dedicated structure, that will store values of every arguments
-        string* path;
-        char type = 't'; // b | t
-        char size_units = '\0'; // b | k | m | g
-        string* output_path;
-    } CliArguments;
-    CliArguments cli_arguments;
-
-    const auto get_cli_arguments(int n_args, const char** v_args) {
+    CliArguments* get_cli_arguments(int n_args, const char** v_args) {
         // method, that records all cli arguments directly from the main function
         string* raw_arguments[n_args - 1];
         char value = 0;
