@@ -13,7 +13,7 @@ namespace plantuml_schema_ns {
 
     OutputType extract_output_file_type(string* output_path) {
         // cout << output_path->substr(output_path->rfind(".") + 1) << endl;
-        const string ext = output_path->substr(output_path->rfind(".") + 1);
+        string ext = output_path->substr(output_path->rfind(".") + 1);
 
         if (ext == "jpg" || ext == "jpeg") return JPG;
         if (ext == "png") return PNG;
@@ -22,6 +22,7 @@ namespace plantuml_schema_ns {
         return ASCII;
     }
 
+    // TODO: create a way of defining format of resulting PlantUML string in advance
     struct {
         string path;
         SchemaType schema_type = TREE;
@@ -30,13 +31,13 @@ namespace plantuml_schema_ns {
         string output_path;
     } schema_arguments;
 
-    auto* get_schema_arguments(auto& cli_arguments) {
-        schema_arguments.path = string(*cli_arguments.path);
-        schema_arguments.output_path = string(*cli_arguments.output_path);
-        schema_arguments.output_type = extract_output_file_type(*cli_arguments.output_path);
-        schema_arguments.schema_type = cli_arguments.type == 'b'?BOX:TREE;
+    void get_schema_arguments(cli_arguments_ns::CliArguments* cli_arguments) {
+        schema_arguments.path = string(*cli_arguments->path);
+        schema_arguments.output_path = string(*cli_arguments->output_path);
+        schema_arguments.output_type = extract_output_file_type(cli_arguments->output_path);
+        schema_arguments.schema_type = cli_arguments->type == 'b'?BOX:TREE;
 
-        switch (cli_arguments.size_units){
+        switch (cli_arguments->size_units){
             case 'b': schema_arguments.size_units = "B" ;break;
             case 'k': schema_arguments.size_units = "KB" ;break;
             case 'm': schema_arguments.size_units = "MB" ;break;
@@ -68,7 +69,7 @@ namespace plantuml_schema_ns {
         //*plantuml_string += std::format();
         cout << "QWert";
         //sprintf((char*)plantuml_string->c_str(), plantuml_string_format, );
-        //*plantuml_string += format(plantuml_string_format, entry.name);
+        *plantuml_string += format(plantuml_string_format, entry.name);
 
         return plantuml_string;
     }
