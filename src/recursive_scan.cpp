@@ -8,7 +8,7 @@
 namespace fs = filesystem;
 
 namespace recursive_scan_ns {
-    vector<FilesystemEntry> plantUML_entries = vector<FilesystemEntry>(); // array that conatins entries of plantUML strings, these will be directly printed to a file, that will be used by plantUML engine
+    vector<FilesystemEntry> filesystem_entries = vector<FilesystemEntry>(); // array that conatins entries of plantUML strings, these will be directly printed to a file, that will be used by plantUML engine
 
     FilesystemEntry* createFilesystemEntry(uint8_t depth, string name, EntryType type, uintmax_t size) {
         FilesystemEntry* created = new FilesystemEntry;
@@ -25,9 +25,9 @@ namespace recursive_scan_ns {
         const fs::path path = fs::path(root_path);
         uintmax_t top_entry_size = 0;
 
-        plantUML_entries.push_back(*createFilesystemEntry(0, path.filename(), DIR)); // first element in the stack is root
+        filesystem_entries.push_back(*createFilesystemEntry(0, path.filename(), DIR)); // first element in the stack is root
         try {
-            stack<uint> entries_stack = stack<uint>(); // stack, that will keep track of which directory I'm currently in, each element is an index of that directory in the 'plantUML_entries'
+            stack<uint> entries_stack = stack<uint>(); // stack, that will keep track of which directory I'm currently in, each element is an index of that directory in the 'filesystem_entries'
             entries_stack.push(0); // pushing root element
 
             for (auto entry = fs::recursive_directory_iterator(path); entry != fs::recursive_directory_iterator(); entry++) {
@@ -40,14 +40,14 @@ namespace recursive_scan_ns {
 
                 if (depth > entries_stack.size()) {
                     // entered a directory
-                    cout << "Entering directory " << plantUML_entries[plantUML_entries.size() - 1].name << "\n";
-                    entries_stack.push(plantUML_entries.size() - 1); // record index of the parent directory (so the last element in the sequence)
+                    cout << "Entering directory " << filesystem_entries[filesystem_entries.size() - 1].name << "\n";
+                    entries_stack.push(filesystem_entries.size() - 1); // record index of the parent directory (so the last element in the sequence)
                 } else while (depth < entries_stack.size()) {
                     // exiting directory by popping entries from the stack
-                    cout << "Exeting directory " << plantUML_entries.at(entries_stack.top()).name << "\n";
-                    top_entry_size = plantUML_entries[entries_stack.top()].size;
+                    cout << "Exeting directory " << filesystem_entries.at(entries_stack.top()).name << "\n";
+                    top_entry_size = filesystem_entries[entries_stack.top()].size;
                     entries_stack.pop();
-                    plantUML_entries[entries_stack.top()].size += top_entry_size;
+                    filesystem_entries[entries_stack.top()].size += top_entry_size;
                 }
 
                 if (fs::is_directory(currentPath)) { // if it's a directory
@@ -57,36 +57,36 @@ namespace recursive_scan_ns {
                 } else if (fs::is_regular_file(currentPath)) {
                     created_entry->type = FILE;
                     created_entry->size = fs::file_size(currentPath);
-                    plantUML_entries[entries_stack.top()].size += created_entry->size;
+                    filesystem_entries[entries_stack.top()].size += created_entry->size;
                 }
 
-                plantUML_entries.push_back(*created_entry);
+                filesystem_entries.push_back(*created_entry);
                 // print the top element in the stack
                 if (entries_stack.size()) {
-                    cout << plantUML_entries[entries_stack.size() - 1].name << " " << entries_stack.size() << endl;
+                    cout << filesystem_entries[entries_stack.size() - 1].name << " " << entries_stack.size() << endl;
                 }
             }
 
             while (1 < entries_stack.size()) {
                 // exiting directory by popping entries from the stack
-                cout << "Exeting directory " << plantUML_entries.at(entries_stack.top()).name << "\n";
-                top_entry_size = plantUML_entries[entries_stack.top()].size;
+                cout << "Exeting directory " << filesystem_entries.at(entries_stack.top()).name << "\n";
+                top_entry_size = filesystem_entries[entries_stack.top()].size;
                 entries_stack.pop();
-                plantUML_entries[entries_stack.top()].size += top_entry_size;
+                filesystem_entries[entries_stack.top()].size += top_entry_size;
             }
 
-            //plantUML_entries[0].size += plantUML_entries[entries_stack.top()].size;
+            //filesystem_entries[0].size += filesystem_entries[entries_stack.top()].size;
             cout << "Got:\n";
-            for (const auto& elem : plantUML_entries) {
+            for (const auto& elem : filesystem_entries) {
                 cout << elem.name << " " << elem.type << ":" << (uint)elem.depth << " ";
             }
-            return &plantUML_entries;
+            return &filesystem_entries;
 
         } catch (const fs::filesystem_error& e) {
             cerr << "Filesystem error: " << e.what() << endl;
         } catch (const exception& e) {
             cerr << "General error: " << e.what() << endl;
         }
-        return &plantUML_entries;
+        return &filesystem_entries;
     }
 }

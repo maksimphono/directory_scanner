@@ -22,7 +22,7 @@ namespace plantuml_schema_ns {
             // here must be logic, that creates format for each created string
             // and gather overall informationfrom the sequence of entries
             if (schema_arguments.show_size) {
-                this->string_format = "{0} ({1})";
+                this->string_format = "{0} ({1} {2})";
             }
         }
         string construct_plantUML_string(const recursive_scan_ns::FilesystemEntry& entry) {
@@ -30,7 +30,7 @@ namespace plantuml_schema_ns {
 
             plantuml_string.assign(entry.depth + 1, '*');
             plantuml_string += " ";
-            plantuml_string += vformat(this->string_format, make_format_args(entry.name, schema_arguments.size_units)); // was forced to do so, using regular std::format the same way as in the documentation (https://en.cppreference.com/w/cpp/utility/format/format.html) produce error "...`string_format` is not a constant expression...", idk why
+            plantuml_string += vformat(this->string_format, make_format_args(entry.name, entry.size, schema_arguments.size_units)); // was forced to do so, using regular std::format the same way as in the documentation (https://en.cppreference.com/w/cpp/utility/format/format.html) produce error "...`string_format` is not a constant expression...", idk why
 
             return plantuml_string;
         }
