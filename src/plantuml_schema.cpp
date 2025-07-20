@@ -13,9 +13,9 @@ namespace plantuml_schema_ns {
     class PlantUML_TreeSchema : public PlantUMLSchema {
     private:
         string string_format;
-        vector<recursive_scan_ns::PlantUMLEntry>& sequence;
+        vector<recursive_scan_ns::FilesystemEntry>& sequence;
     public:
-        PlantUML_TreeSchema(vector<recursive_scan_ns::PlantUMLEntry>& sequence) : sequence(sequence) {
+        PlantUML_TreeSchema(vector<recursive_scan_ns::FilesystemEntry>& sequence) : sequence(sequence) {
             this->string_format = "{0}";
             // TODO: create format based on the schema_arguments
 
@@ -25,7 +25,7 @@ namespace plantuml_schema_ns {
                 this->string_format = "{0} ({1})";
             }
         }
-        string construct_plantUML_string(const recursive_scan_ns::PlantUMLEntry& entry) {
+        string construct_plantUML_string(const recursive_scan_ns::FilesystemEntry& entry) {
             string plantuml_string = string();
 
             plantuml_string.assign(entry.depth + 1, '*');
@@ -51,9 +51,9 @@ namespace plantuml_schema_ns {
     class PlantUML_BoxSchema : public PlantUMLSchema {
     private:
         string string_format;
-        vector<recursive_scan_ns::PlantUMLEntry>& sequence;
+        vector<recursive_scan_ns::FilesystemEntry>& sequence;
     public:
-        PlantUML_BoxSchema(vector<recursive_scan_ns::PlantUMLEntry>& sequence) : sequence(sequence) {
+        PlantUML_BoxSchema(vector<recursive_scan_ns::FilesystemEntry>& sequence) : sequence(sequence) {
             this->string_format = "state \"{1}\" as S{0}";
             // TODO: create format based on the schema_arguments
 
@@ -62,19 +62,19 @@ namespace plantuml_schema_ns {
             // here must be logic, that creates format for each created string
             // and gather overall informationfrom the sequence of entries
         }
-        string construct_plantUML_string(uint8_t index, recursive_scan_ns::PlantUMLEntry& entry) {
+        string construct_plantUML_string(uint8_t index, recursive_scan_ns::FilesystemEntry& entry) {
             return vformat(this->string_format, make_format_args(index, entry.name, schema_arguments.size_units));
         }
         void print(ostream& stream) override {
             stream << "@startuml\n";
 
-            recursive_scan_ns::PlantUMLEntry root = this->sequence.front();
+            recursive_scan_ns::FilesystemEntry root = this->sequence.front();
             stream << this->construct_plantUML_string(0, root);
             uint8_t diff = 0;
 
             for (uint8_t i = 1; i < this->sequence.size(); i++) {
-                recursive_scan_ns::PlantUMLEntry& current_entry = this->sequence[i];
-                recursive_scan_ns::PlantUMLEntry& prev_entry = this->sequence[i - 1];
+                recursive_scan_ns::FilesystemEntry& current_entry = this->sequence[i];
+                recursive_scan_ns::FilesystemEntry& prev_entry = this->sequence[i - 1];
 
                 if (current_entry.depth > prev_entry.depth)
                     // enring a directory
@@ -139,7 +139,7 @@ namespace plantuml_schema_ns {
         cout << "Created schema_arguments: " << schema_arguments.output_type << " " << schema_arguments.size_units << endl;
     }
 
-    void create_schema(vector<recursive_scan_ns::PlantUMLEntry>& sequence, cli_arguments_ns::CliArguments* cli_arguments, ostream& out_stream) {
+    void create_schema(vector<recursive_scan_ns::FilesystemEntry>& sequence, cli_arguments_ns::CliArguments* cli_arguments, ostream& out_stream) {
         // must create a stream, where the plantuml code will be written, 
         // after that this code will be used within the bash script: "echo $1 | java -jar plantuml -pipe"
         get_schema_arguments(cli_arguments); // creates schema_arguments from cli_arguments
@@ -150,12 +150,12 @@ namespace plantuml_schema_ns {
         }
     }
 
-    void create_tree_schema(vector<recursive_scan_ns::PlantUMLEntry>& sequence, ostream& out_stream) {
+    void create_tree_schema(vector<recursive_scan_ns::FilesystemEntry>& sequence, ostream& out_stream) {
         PlantUML_TreeSchema schema = PlantUML_TreeSchema(sequence);
         schema.print(out_stream);
     }
 
-    void create_box_schema(vector<recursive_scan_ns::PlantUMLEntry>& sequence, ostream& out_stream) {
+    void create_box_schema(vector<recursive_scan_ns::FilesystemEntry>& sequence, ostream& out_stream) {
         PlantUML_BoxSchema schema = PlantUML_BoxSchema(sequence);
         schema.print(out_stream);
     }

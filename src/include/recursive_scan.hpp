@@ -17,9 +17,9 @@ namespace recursive_scan_ns {
         uint8_t depth;
         string name;
         EntryType type;
-    } PlantUMLEntry;
+    } FilesystemEntry;
 
-    PlantUMLEntry* createPlantUMLEntry(uint8_t depth, string name, EntryType type = FILE);
+    FilesystemEntry* createFilesystemEntry(uint8_t depth, string name, EntryType type = FILE);
     
-    vector<PlantUMLEntry>* scan(string& root_path);
+    vector<FilesystemEntry>* scan(string& root_path);
 }

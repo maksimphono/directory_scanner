@@ -8,10 +8,10 @@
 namespace fs = filesystem;
 
 namespace recursive_scan_ns {
-    vector<PlantUMLEntry> plantUML_entries = vector<PlantUMLEntry>(); // array that conatins entries of plantUML strings, these will be directly printed to a file, that will be used by plantUML engine
+    vector<FilesystemEntry> plantUML_entries = vector<FilesystemEntry>(); // array that conatins entries of plantUML strings, these will be directly printed to a file, that will be used by plantUML engine
 
-    PlantUMLEntry* createPlantUMLEntry(uint8_t depth, string name, EntryType type){
-        PlantUMLEntry* created = new PlantUMLEntry;
+    FilesystemEntry* createFilesystemEntry(uint8_t depth, string name, EntryType type){
+        FilesystemEntry* created = new FilesystemEntry;
         created->depth = depth;
         created->name = name;
         created->type = type;
@@ -19,10 +19,10 @@ namespace recursive_scan_ns {
         return created;
     }
 
-    vector<PlantUMLEntry>* scan(string& root_path) {
+    vector<FilesystemEntry>* scan(string& root_path) {
         const fs::path path = fs::path(root_path);
 
-        plantUML_entries.push_back(*createPlantUMLEntry(0, path.filename(), DIR)); // first element in the stack is root
+        plantUML_entries.push_back(*createFilesystemEntry(0, path.filename(), DIR)); // first element in the stack is root
         try {
             stack<uint> entries_stack = stack<uint>(); // stack, that will keep track of which directory I'm currently in, each element is an index of that directory in the 'plantUML_entries'
             entries_stack.push(0); // pushing root element
@@ -43,7 +43,7 @@ namespace recursive_scan_ns {
                 }
 
                 // write current element to the sequence (type = FILE initialy and by default)
-                PlantUMLEntry* created_entry = createPlantUMLEntry(depth, currentPath.filename().string(), FILE);
+                FilesystemEntry* created_entry = createFilesystemEntry(depth, currentPath.filename().string(), FILE);
 
                 if (fs::is_directory(currentPath)) { // if it's a directory
                     created_entry->type = DIR;
