@@ -11,8 +11,8 @@ string repeat(string str, uint8_t times) { // repeat srting n times
     return result;
 }
 
-inline double bytes2KB(uintmax_t& bytes_num) { return bytes_num / 1024; }
+inline double bytes2KB(uintmax_t& bytes_num) { return (double)bytes_num / 10; }
 
-inline double bytes2MB(uintmax_t& bytes_num) { return bytes_num / pow(1024, 2); }
+inline double bytes2MB(uintmax_t& bytes_num) { return (double)bytes_num / pow(1024, 2); }
 
-inline double bytes2GB(uintmax_t& bytes_num) { return bytes_num / pow(1024, 3); }
+inline double bytes2GB(uintmax_t& bytes_num) { return (double)bytes_num / pow(1024, 3); }
