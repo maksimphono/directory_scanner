@@ -53,9 +53,10 @@ namespace plantuml_schema_ns {
         string string_format;
         vector<recursive_scan_ns::PlantUMLEntry>& sequence;
     public:
-        // TODO: improve implementation of that class
         PlantUML_BoxSchema(vector<recursive_scan_ns::PlantUMLEntry>& sequence) : sequence(sequence) {
             this->string_format = "state \"{1}\" as S{0}";
+            // TODO: create format based on the schema_arguments
+
             // here must be logic, that creates format for each created string
             // and gather overall informationfrom the sequence of entries
         }
@@ -133,30 +134,21 @@ namespace plantuml_schema_ns {
     void create_schema(vector<recursive_scan_ns::PlantUMLEntry>& sequence, cli_arguments_ns::CliArguments* cli_arguments, ostream& out_stream) {
         // must create a stream, where the plantuml code will be written, 
         // after that this code will be used within the bash script: "echo $1 | java -jar plantuml -pipe"
-
         get_schema_arguments(cli_arguments); // creates schema_arguments from cli_arguments
 
-        if (schema_arguments.schema_type == TREE) {
-            PlantUML_TreeSchema schema = PlantUML_TreeSchema(sequence);
-            schema.print(out_stream);
-        } else if (schema_arguments.schema_type == BOX) {
-            PlantUML_BoxSchema schema = PlantUML_BoxSchema(sequence);
-            schema.print(out_stream);
+        switch (schema_arguments.schema_type) {
+            case TREE: create_tree_schema(sequence, out_stream); break;
+            case BOX: create_box_schema(sequence, out_stream); break;
         }
     }
 
     void create_tree_schema(vector<recursive_scan_ns::PlantUMLEntry>& sequence, ostream& out_stream) {
         PlantUML_TreeSchema schema = PlantUML_TreeSchema(sequence);
-
         schema.print(out_stream);
-        //out_stream << "@endmindmap\n";
     }
 
     void create_box_schema(vector<recursive_scan_ns::PlantUMLEntry>& sequence, ostream& out_stream) {
         PlantUML_BoxSchema schema = PlantUML_BoxSchema(sequence);
-
-        //out_stream << "@startuml\n";
         schema.print(out_stream);
-        //out_stream << "@enduml\n";
     }
 }
