@@ -27,6 +27,7 @@ namespace plantuml_schema_ns {
         }
         string construct_plantUML_string(const recursive_scan_ns::FilesystemEntry& entry) {
             string plantuml_string = string();
+            double size;
 
             plantuml_string.assign(entry.depth + 1, '*');
             plantuml_string += " ";
