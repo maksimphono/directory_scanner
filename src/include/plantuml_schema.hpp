@@ -39,5 +39,5 @@ namespace plantuml_schema_ns {
     string* construct_plantUML_tree_string(const recursive_scan_ns::PlantUMLEntry& entry);
 
     void create_tree_schema(vector<recursive_scan_ns::PlantUMLEntry>&);
-    //void create_box_schema(vector<recursive_scan_ns::PlantUMLEntry>&);
+    void create_box_schema(vector<recursive_scan_ns::PlantUMLEntry>&);
 }

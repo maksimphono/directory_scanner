@@ -7,6 +7,13 @@
 //using namespace ;
 using namespace std;
 
+string repeat(string str, uint8_t times) {
+    string result = "";
+    for (uint8_t i = 0; i < times; i++) result += str;
+
+    return result;
+}
+
 namespace plantuml_schema_ns {
 
     class PlantUML_TreeSchema : public PlantUMLSchema {
@@ -54,35 +61,37 @@ namespace plantuml_schema_ns {
             // here must be logic, that creates format for each created string
             // and gather overall informationfrom the sequence of entries
         }
+        string construct_plantUML_string(uint8_t index, recursive_scan_ns::PlantUMLEntry& entry) {
+            return vformat(this->string_format, make_format_args(index, entry.name));
+        }
         void print(ostream& stream) override {
-            recursive_scan_ns::PlantUMLEntry* root = &this->sequence[0];
-            stream << vformat(this->string_format, make_format_args("0", root->name));
+            recursive_scan_ns::PlantUMLEntry root = this->sequence.front();
+            stream << this->construct_plantUML_string(0, root);
             uint8_t diff = 0;
 
-            for (int i = 1; i < this->sequence.size(); i++) {
+            for (uint8_t i = 1; i < this->sequence.size(); i++) {
                 recursive_scan_ns::PlantUMLEntry& current_entry = this->sequence[i];
                 recursive_scan_ns::PlantUMLEntry& prev_entry = this->sequence[i - 1];
 
                 if (current_entry.depth > prev_entry.depth)
                     // enring a directory
-                    stream << "{\n";
+                    stream << "{" << endl;
                 else if (current_entry.depth < prev_entry.depth) {
                     // exiting a directory
-                    stream << endl;
                     diff = prev_entry.depth - current_entry.depth;
-                    for (int j = 0; j < diff; j++)
-                        stream << "}\n";
+                    stream 
+                        << endl
+                        << repeat("}\n", diff);
                 } else {
                     // in the same directory
                     stream << endl;
                 }
 
-                stream
-                    << vformat(this->string_format, make_format_args(i, current_entry.name));
+                stream << this->construct_plantUML_string(i, current_entry);
             }
-            stream << endl;
-            for (int j = 0; j < this->sequence[this->sequence.size() - 1].depth; j++)
-                stream << "}" << endl;
+            stream
+                << endl
+                << repeat("}\n", this->sequence.back().depth);
         }
     };
 
@@ -127,11 +136,24 @@ namespace plantuml_schema_ns {
         if (schema_arguments.schema_type == TREE) {
             create_tree_schema(sequence);
         } else if (schema_arguments.schema_type == BOX) {
-            //create_box_schema(sequence);
+            create_box_schema(sequence);
         }
     }
 
     void create_tree_schema(vector<recursive_scan_ns::PlantUMLEntry>& sequence) {
+        stringstream plantUML_commands = stringstream();
+        PlantUML_TreeSchema schema = PlantUML_TreeSchema(sequence);
+
+        plantUML_commands << "@startmindmap\n";
+
+        schema.print(plantUML_commands);
+
+        plantUML_commands << "@endmindmap\n";
+
+        cout << plantUML_commands.str();
+    }
+
+    void create_box_schema(vector<recursive_scan_ns::PlantUMLEntry>& sequence) {
         stringstream plantUML_commands = stringstream();
         PlantUML_BoxSchema schema = PlantUML_BoxSchema(sequence);
 
