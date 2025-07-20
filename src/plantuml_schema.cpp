@@ -3,16 +3,10 @@
 #include <string>
 
 #include "include/plantuml_schema.hpp"
+#include "utils/helpers.cpp"
 
 //using namespace ;
 using namespace std;
-
-string repeat(string str, uint8_t times) {
-    string result = "";
-    for (uint8_t i = 0; i < times; i++) result += str;
-
-    return result;
-}
 
 namespace plantuml_schema_ns {
 
@@ -42,11 +36,15 @@ namespace plantuml_schema_ns {
         }
         void print(ostream& stream) override {
             // will output entire plantuml code into the provided stream
+            stream << "@startmindmap\n";
+
             for (const auto& plantuml_entry : this->sequence) {
                 stream
                     << this->construct_plantUML_string(plantuml_entry)
                     << endl;
             }
+
+            stream << "@endmindmap\n";
         }
     };
 
@@ -65,6 +63,8 @@ namespace plantuml_schema_ns {
             return vformat(this->string_format, make_format_args(index, entry.name));
         }
         void print(ostream& stream) override {
+            stream << "@startuml\n";
+
             recursive_scan_ns::PlantUMLEntry root = this->sequence.front();
             stream << this->construct_plantUML_string(0, root);
             uint8_t diff = 0;
@@ -92,6 +92,8 @@ namespace plantuml_schema_ns {
             stream
                 << endl
                 << repeat("}\n", this->sequence.back().depth);
+
+            stream << "@enduml\n";
         }
     };
 
@@ -128,41 +130,33 @@ namespace plantuml_schema_ns {
         cout << "Created schema_arguments: " << schema_arguments.output_type << " " << schema_arguments.size_units << endl;
     }
 
-    void create_schema(vector<recursive_scan_ns::PlantUMLEntry>& sequence, cli_arguments_ns::CliArguments* cli_arguments) {
+    void create_schema(vector<recursive_scan_ns::PlantUMLEntry>& sequence, cli_arguments_ns::CliArguments* cli_arguments, ostream& out_stream) {
         // must create a stream, where the plantuml code will be written, 
         // after that this code will be used within the bash script: "echo $1 | java -jar plantuml -pipe"
+
         get_schema_arguments(cli_arguments); // creates schema_arguments from cli_arguments
 
         if (schema_arguments.schema_type == TREE) {
-            create_tree_schema(sequence);
+            PlantUML_TreeSchema schema = PlantUML_TreeSchema(sequence);
+            schema.print(out_stream);
         } else if (schema_arguments.schema_type == BOX) {
-            create_box_schema(sequence);
+            PlantUML_BoxSchema schema = PlantUML_BoxSchema(sequence);
+            schema.print(out_stream);
         }
     }
 
-    void create_tree_schema(vector<recursive_scan_ns::PlantUMLEntry>& sequence) {
-        stringstream plantUML_commands = stringstream();
+    void create_tree_schema(vector<recursive_scan_ns::PlantUMLEntry>& sequence, ostream& out_stream) {
         PlantUML_TreeSchema schema = PlantUML_TreeSchema(sequence);
 
-        plantUML_commands << "@startmindmap\n";
-
-        schema.print(plantUML_commands);
-
-        plantUML_commands << "@endmindmap\n";
-
-        cout << plantUML_commands.str();
+        schema.print(out_stream);
+        //out_stream << "@endmindmap\n";
     }
 
-    void create_box_schema(vector<recursive_scan_ns::PlantUMLEntry>& sequence) {
-        stringstream plantUML_commands = stringstream();
+    void create_box_schema(vector<recursive_scan_ns::PlantUMLEntry>& sequence, ostream& out_stream) {
         PlantUML_BoxSchema schema = PlantUML_BoxSchema(sequence);
 
-        plantUML_commands << "@startuml\n";
-
-        schema.print(plantUML_commands);
-
-        plantUML_commands << "@enduml\n";
-
-        cout << plantUML_commands.str();
+        //out_stream << "@startuml\n";
+        schema.print(out_stream);
+        //out_stream << "@enduml\n";
     }
 }

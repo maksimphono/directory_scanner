@@ -34,10 +34,10 @@ namespace plantuml_schema_ns {
 
     void get_schema_arguments(cli_arguments_ns::CliArguments* cli_arguments);
 
-    void create_schema(vector<recursive_scan_ns::PlantUMLEntry>& sequence, cli_arguments_ns::CliArguments* cli_arguments);
+    void create_schema(vector<recursive_scan_ns::PlantUMLEntry>& sequence, cli_arguments_ns::CliArguments* cli_arguments, ostream& out_stream = cout);
 
     string* construct_plantUML_tree_string(const recursive_scan_ns::PlantUMLEntry& entry);
 
-    void create_tree_schema(vector<recursive_scan_ns::PlantUMLEntry>&);
-    void create_box_schema(vector<recursive_scan_ns::PlantUMLEntry>&);
+    void create_tree_schema(vector<recursive_scan_ns::PlantUMLEntry>&, ostream& out_stream = cout);
+    void create_box_schema(vector<recursive_scan_ns::PlantUMLEntry>&, ostream& out_stream = cout);
 }

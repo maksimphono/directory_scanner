@@ -56,19 +56,12 @@ MMMMMMMMMMMMMMMMl              .,'.   ...''',;;::,,,',;;'....                   
 
 /*
     Basic workflow:
-    1) Create code for plantuml, write it to the string
-    2) Write resulting code to this command
-    $ echo "$1" | java -jar plantuml -pipe
-
-    Where $1 is the plantuml code
-
-    3) Execute this command
+    Create code for plantuml, write it to the stdout
 */
 
 int main(int n_args, const char** v_args) {
     try {
         cli_arguments_ns::CliArguments* args = cli_arguments_ns::get_cli_arguments(n_args, v_args);
-        cout << "\n" << *args->path;
         vector<recursive_scan_ns::PlantUMLEntry>& seq = *recursive_scan_ns::scan(*args->path);
         plantuml_schema_ns::create_schema(seq, args);
     } catch(const exception& exp) {
