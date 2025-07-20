@@ -10,11 +10,13 @@ namespace fs = filesystem;
 namespace recursive_scan_ns {
     vector<FilesystemEntry> plantUML_entries = vector<FilesystemEntry>(); // array that conatins entries of plantUML strings, these will be directly printed to a file, that will be used by plantUML engine
 
-    FilesystemEntry* createFilesystemEntry(uint8_t depth, string name, EntryType type){
+    FilesystemEntry* createFilesystemEntry(uint8_t depth, string name, EntryType type, uintmax_t size) {
         FilesystemEntry* created = new FilesystemEntry;
         created->depth = depth;
         created->name = name;
         created->type = type;
+        created->size = size;
+        cout << "Size: " << size << endl;
 
         return created;
     }
@@ -49,6 +51,9 @@ namespace recursive_scan_ns {
                     created_entry->type = DIR;
                 } else if (fs::is_symlink(currentPath)) {
                     created_entry->type = SYMLINK;
+                } else if (fs::is_regular_file(currentPath)) {
+                    created_entry->type = FILE;
+                    created_entry->size = fs::file_size(currentPath);
                 }
 
                 plantUML_entries.push_back(*created_entry);

@@ -58,12 +58,12 @@ namespace plantuml_schema_ns {
             // TODO: create format based on the schema_arguments
 
             if (schema_arguments.show_size)
-                this->string_format = "state \"{1} ({2})\" as S{0}";
+                this->string_format = "state \"{1} ({2} {3})\" as S{0}";
             // here must be logic, that creates format for each created string
             // and gather overall informationfrom the sequence of entries
         }
         string construct_plantUML_string(uint8_t index, recursive_scan_ns::FilesystemEntry& entry) {
-            return vformat(this->string_format, make_format_args(index, entry.name, schema_arguments.size_units));
+            return vformat(this->string_format, make_format_args(index, entry.name, entry.size, schema_arguments.size_units));
         }
         void print(ostream& stream) override {
             stream << "@startuml\n";
