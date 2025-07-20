@@ -7,7 +7,6 @@
 
 namespace fs = filesystem;
 
-
 namespace recursive_scan_ns {
     vector<FilesystemEntry> plantUML_entries = vector<FilesystemEntry>(); // array that conatins entries of plantUML strings, these will be directly printed to a file, that will be used by plantUML engine
 
@@ -24,6 +23,7 @@ namespace recursive_scan_ns {
 
     vector<FilesystemEntry>* scan(string& root_path) {
         const fs::path path = fs::path(root_path);
+        uintmax_t top_entry_size = 0;
 
         plantUML_entries.push_back(*createFilesystemEntry(0, path.filename(), DIR)); // first element in the stack is root
         try {
@@ -45,9 +45,9 @@ namespace recursive_scan_ns {
                 } else while (depth < entries_stack.size()) {
                     // exiting directory by popping entries from the stack
                     cout << "Exeting directory " << plantUML_entries.at(entries_stack.top()).name << "\n";
-                    uintmax_t s = plantUML_entries[entries_stack.top()].size;
+                    top_entry_size = plantUML_entries[entries_stack.top()].size;
                     entries_stack.pop();
-                    plantUML_entries[entries_stack.top()].size += s;
+                    plantUML_entries[entries_stack.top()].size += top_entry_size;
                 }
 
                 if (fs::is_directory(currentPath)) { // if it's a directory
@@ -70,9 +70,9 @@ namespace recursive_scan_ns {
             while (1 < entries_stack.size()) {
                 // exiting directory by popping entries from the stack
                 cout << "Exeting directory " << plantUML_entries.at(entries_stack.top()).name << "\n";
-                uintmax_t s = plantUML_entries[entries_stack.top()].size;
+                top_entry_size = plantUML_entries[entries_stack.top()].size;
                 entries_stack.pop();
-                plantUML_entries[entries_stack.top()].size += s;
+                plantUML_entries[entries_stack.top()].size += top_entry_size;
             }
 
             //plantUML_entries[0].size += plantUML_entries[entries_stack.top()].size;
