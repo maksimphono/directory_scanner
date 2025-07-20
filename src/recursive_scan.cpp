@@ -45,7 +45,9 @@ namespace recursive_scan_ns {
                 } else while (depth < entries_stack.size()) {
                     // exiting directory by popping entries from the stack
                     cout << "Exeting directory " << plantUML_entries.at(entries_stack.top()).name << "\n";
+                    uintmax_t s = plantUML_entries[entries_stack.top()].size;
                     entries_stack.pop();
+                    plantUML_entries[entries_stack.top()].size += s;
                 }
 
                 if (fs::is_directory(currentPath)) { // if it's a directory
@@ -64,6 +66,16 @@ namespace recursive_scan_ns {
                     cout << plantUML_entries[entries_stack.size() - 1].name << " " << entries_stack.size() << endl;
                 }
             }
+
+            while (1 < entries_stack.size()) {
+                // exiting directory by popping entries from the stack
+                cout << "Exeting directory " << plantUML_entries.at(entries_stack.top()).name << "\n";
+                uintmax_t s = plantUML_entries[entries_stack.top()].size;
+                entries_stack.pop();
+                plantUML_entries[entries_stack.top()].size += s;
+            }
+
+            //plantUML_entries[0].size += plantUML_entries[entries_stack.top()].size;
             cout << "Got:\n";
             for (const auto& elem : plantUML_entries) {
                 cout << elem.name << " " << elem.type << ":" << (uint)elem.depth << " ";
