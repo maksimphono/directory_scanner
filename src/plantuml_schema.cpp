@@ -122,6 +122,12 @@ namespace plantuml_schema_ns {
         } else {
             schema_arguments.output_type = ASCII;
         }
+
+        if (cli_arguments->size_units != '\0') {
+            schema_arguments.show_size = true;
+        } else
+            schema_arguments.show_size = false;
+
         schema_arguments.schema_type = cli_arguments->type == 'b'?BOX:TREE;
         
         switch (cli_arguments->size_units) {
@@ -138,7 +144,6 @@ namespace plantuml_schema_ns {
         // after that this code will be used within the bash script: "echo $1 | java -jar plantuml -pipe"
         get_schema_arguments(cli_arguments); // creates schema_arguments from cli_arguments
 
-        schema_arguments.show_size = true;
         switch (schema_arguments.schema_type) {
             case TREE: create_tree_schema(sequence, out_stream); break;
             case BOX: create_box_schema(sequence, out_stream); break;
