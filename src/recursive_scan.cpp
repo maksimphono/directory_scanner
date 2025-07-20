@@ -7,6 +7,7 @@
 
 namespace fs = filesystem;
 
+
 namespace recursive_scan_ns {
     vector<FilesystemEntry> plantUML_entries = vector<FilesystemEntry>(); // array that conatins entries of plantUML strings, these will be directly printed to a file, that will be used by plantUML engine
 
@@ -34,6 +35,9 @@ namespace recursive_scan_ns {
 
                 uint8_t depth = entry.depth() + 1; // + 1 because root has depth 0
 
+                // write current element to the sequence (type = FILE initialy and by default)
+                FilesystemEntry* created_entry = createFilesystemEntry(depth, currentPath.filename().string(), FILE);
+
                 if (depth > entries_stack.size()) {
                     // entered a directory
                     cout << "Entering directory " << plantUML_entries[plantUML_entries.size() - 1].name << "\n";
@@ -44,9 +48,6 @@ namespace recursive_scan_ns {
                     entries_stack.pop();
                 }
 
-                // write current element to the sequence (type = FILE initialy and by default)
-                FilesystemEntry* created_entry = createFilesystemEntry(depth, currentPath.filename().string(), FILE);
-
                 if (fs::is_directory(currentPath)) { // if it's a directory
                     created_entry->type = DIR;
                 } else if (fs::is_symlink(currentPath)) {
@@ -54,10 +55,10 @@ namespace recursive_scan_ns {
                 } else if (fs::is_regular_file(currentPath)) {
                     created_entry->type = FILE;
                     created_entry->size = fs::file_size(currentPath);
+                    plantUML_entries[entries_stack.top()].size += created_entry->size;
                 }
 
                 plantUML_entries.push_back(*created_entry);
-
                 // print the top element in the stack
                 if (entries_stack.size()) {
                     cout << plantUML_entries[entries_stack.size() - 1].name << " " << entries_stack.size() << endl;
