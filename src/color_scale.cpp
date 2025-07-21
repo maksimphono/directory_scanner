@@ -3,6 +3,8 @@
 #include <vector>
 #include <cmath>
 #include <string.h>
+#include <sstream>
+#include <iomanip>
 using namespace std;
 
 namespace color_scale_ns {
@@ -19,6 +21,14 @@ namespace color_scale_ns {
         }
         Color(Color* another) {
             memcpy(this->vector_rgb, another->vector_rgb, sizeof(another->vector_rgb));
+        }
+        Color(string s) {
+            int r = 0, g = 0, b = 0;
+            sscanf(s.c_str(), "#%2x%2x%2x", &r, &g, &b);
+
+            this->vector_rgb[0] = (int16_t)r;
+            this->vector_rgb[1] = (int16_t)g;
+            this->vector_rgb[2] = (int16_t)b;
         }
         string str() {
             if (this->rgb()[R] < 0 || this->rgb()[G] < 0 || this->rgb()[B] < 0) return string("#000000");
@@ -95,7 +105,7 @@ int main() {
     Color c2 = Color(1,2,3);
     c2 = convert_to_color(70);
     c1 = (c1 - c2);
-    cout << c2.str();
+    cout << Color("#ff0465").str();
     //printf("#%d %d %d", c2.rgb()[0], c2.rgb()[1], c2.rgb()[2]);
     return 0;
 }
