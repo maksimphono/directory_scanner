@@ -165,12 +165,18 @@ namespace plantuml_schema_ns {
     void create_schema(vector<recursive_scan_ns::FilesystemEntry>& sequence, cli_arguments_ns::CliArguments* cli_arguments, ostream& out_stream) {
         // must create a stream, where the plantuml code will be written, 
         // after that this code will be used within the bash script: "echo $1 | java -jar plantuml -pipe"
-        SchemaArguments schema_arguments = get_schema_arguments(cli_arguments); // creates schema_arguments from cli_arguments
+        SchemaArguments& schema_arguments = get_schema_arguments(cli_arguments); // creates schema_arguments from cli_arguments
+        PlantUMLSchema* schema = nullptr;
 
         switch (schema_arguments.schema_type) {
-            case TREE: create_tree_schema(sequence, out_stream); break;
-            case BOX: create_box_schema(sequence, out_stream); break;
+            case TREE: schema = new PlantUML_TreeSchema(sequence); break;
+            case BOX: schema = new PlantUML_BoxSchema(sequence); break;
         }
+
+        if (schema != nullptr)
+            schema->print(out_stream);
+
+        delete schema;
     }
 
     void create_tree_schema(vector<recursive_scan_ns::FilesystemEntry>& sequence, ostream& out_stream) {

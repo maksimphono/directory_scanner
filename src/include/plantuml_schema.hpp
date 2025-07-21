@@ -23,10 +23,14 @@ namespace plantuml_schema_ns {
         OutputType output_type = ASCII;
     } SchemaArguments;
 
-    class PlantUMLSchema {
+    class PlantUMLSchema_abstract {
     public:
-        virtual ~PlantUMLSchema() {}
+        virtual ~PlantUMLSchema_abstract() {}
         virtual void print(ostream& stream) = 0;
+    };
+    class PlantUMLSchema : public PlantUMLSchema_abstract {
+    public:
+        void print(ostream& stream) override {return;}
     };
 
     constexpr string plantuml_string_format = "{0}";
