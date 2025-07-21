@@ -138,7 +138,7 @@ namespace plantuml_schema_ns {
         schema_arguments.path = string(*cli_arguments->path);
 
         if (cli_arguments->output_path != nullptr) {
-            schema_arguments.output_path = string(*cli_arguments->output_path);
+            //schema_arguments.output_path = string(*cli_arguments->output_path);
             schema_arguments.output_type = extract_output_file_type(cli_arguments->output_path);
         } else {
             schema_arguments.output_type = ASCII;

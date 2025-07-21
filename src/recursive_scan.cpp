@@ -24,6 +24,7 @@ namespace recursive_scan_ns {
     vector<FilesystemEntry>* scan(string& root_path) {
         const fs::path path = fs::path(root_path);
         uintmax_t top_entry_size = 0;
+        vector<FilesystemEntry>& filesystem_entries = recursive_scan_ns::filesystem_entries;
 
         filesystem_entries.push_back(*createFilesystemEntry(0, path.filename(), DIR)); // first element in the stack is root
         try {
