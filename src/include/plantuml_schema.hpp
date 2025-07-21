@@ -21,7 +21,6 @@ namespace plantuml_schema_ns {
         bool show_size = false;
         string size_units; // B | KB | MB | GB
         OutputType output_type = ASCII;
-        string output_path;
     } SchemaArguments;
 
     class PlantUMLSchema {
