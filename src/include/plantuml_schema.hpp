@@ -13,26 +13,26 @@ namespace plantuml_schema_ns {
     typedef enum {ASCII, JPG, PNG, SVG, PDF} OutputType;
     typedef enum {TREE, BOX} SchemaType;
 
-    class PlantUMLSchema {
-    public:
-        virtual ~PlantUMLSchema() {}
-        virtual void print(ostream& stream) = 0;
-    };
-
     OutputType extract_output_file_type(string* output_path);
 
-    struct {
+    typedef struct {
         string path;
         SchemaType schema_type = TREE;
         bool show_size = false;
         string size_units; // B | KB | MB | GB
         OutputType output_type = ASCII;
         string output_path;
-    } schema_arguments;
+    } SchemaArguments;
+
+    class PlantUMLSchema {
+    public:
+        virtual ~PlantUMLSchema() {}
+        virtual void print(ostream& stream) = 0;
+    };
 
     constexpr string plantuml_string_format = "{0}";
 
-    void get_schema_arguments(cli_arguments_ns::CliArguments* cli_arguments);
+    SchemaArguments& get_schema_arguments(cli_arguments_ns::CliArguments* cli_arguments);
 
     void create_schema(vector<recursive_scan_ns::FilesystemEntry>& sequence, cli_arguments_ns::CliArguments* cli_arguments, ostream& out_stream = cout);
 

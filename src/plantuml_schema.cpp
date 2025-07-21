@@ -9,9 +9,11 @@
 using namespace std;
 
 namespace plantuml_schema_ns {
+    SchemaArguments schema_arguments;
 
     class PlantUML_TreeSchema : public PlantUMLSchema {
     private:
+        SchemaArguments& _schema_arguments = plantuml_schema_ns::schema_arguments;
         string string_format;
         vector<recursive_scan_ns::FilesystemEntry>& sequence;
     public:
@@ -20,19 +22,19 @@ namespace plantuml_schema_ns {
 
             // here must be logic, that creates format for each created string
             // and gather overall informationfrom the sequence of entries
-            if (schema_arguments.show_size) {
-                if (schema_arguments.size_units == "B")
+            if (this->_schema_arguments.show_size) {
+                if (this->_schema_arguments.size_units == "B")
                     this->string_format = "{0} ({1} {2})";
                 else
                     this->string_format = "{0} ({1:.2f} {2})";
             }
         }
         string format_entry(recursive_scan_ns::FilesystemEntry& entry) {
-            if (schema_arguments.size_units == "B") {
-                return vformat(this->string_format, make_format_args(entry.name, entry.size, schema_arguments.size_units)); // was forced to do so, using regular std::format the same way as in the documentation (https://en.cppreference.com/w/cpp/utility/format/format.html) produce error "...`string_format` is not a constant expression...", idk why
+            if (this->_schema_arguments.size_units == "B") {
+                return vformat(this->string_format, make_format_args(entry.name, entry.size, this->_schema_arguments.size_units)); // was forced to do so, using regular std::format the same way as in the documentation (https://en.cppreference.com/w/cpp/utility/format/format.html) produce error "...`string_format` is not a constant expression...", idk why
             } else {
-                double converted_size = convert_bytes(entry.size, schema_arguments.size_units);
-                return vformat(this->string_format, make_format_args(entry.name, converted_size, schema_arguments.size_units));
+                double converted_size = convert_bytes(entry.size, this->_schema_arguments.size_units);
+                return vformat(this->string_format, make_format_args(entry.name, converted_size, this->_schema_arguments.size_units));
             }
         }
         string construct_plantUML_string(recursive_scan_ns::FilesystemEntry& entry) {
@@ -60,14 +62,15 @@ namespace plantuml_schema_ns {
 
     class PlantUML_BoxSchema : public PlantUMLSchema {
     private:
+        SchemaArguments& _schema_arguments = plantuml_schema_ns::schema_arguments;
         string string_format;
         vector<recursive_scan_ns::FilesystemEntry>& sequence;
     public:
         PlantUML_BoxSchema(vector<recursive_scan_ns::FilesystemEntry>& sequence) : sequence(sequence) {
             this->string_format = "state \"{1}\" as S{0}";
 
-            if (schema_arguments.show_size)
-                if (schema_arguments.size_units == "B")
+            if (this->_schema_arguments.show_size)
+                if (this->_schema_arguments.size_units == "B")
                     this->string_format = "state \"{1} ({2} {3})\" as S{0}";
                 else
                     this->string_format = "state \"{1} ({2:.2f} {3})\" as S{0}";
@@ -75,11 +78,11 @@ namespace plantuml_schema_ns {
             // and gather overall informationfrom the sequence of entries
         }
         string construct_plantUML_string(uint8_t index, recursive_scan_ns::FilesystemEntry& entry) {
-            if (schema_arguments.size_units == "B") {
-                return vformat(this->string_format, make_format_args(index, entry.name, entry.size, schema_arguments.size_units)); // was forced to do so, using regular std::format the same way as in the documentation (https://en.cppreference.com/w/cpp/utility/format/format.html) produce error "...`string_format` is not a constant expression...", idk why
+            if (this->_schema_arguments.size_units == "B") {
+                return vformat(this->string_format, make_format_args(index, entry.name, entry.size, this->_schema_arguments.size_units)); // was forced to do so, using regular std::format the same way as in the documentation (https://en.cppreference.com/w/cpp/utility/format/format.html) produce error "...`string_format` is not a constant expression...", idk why
             } else {
-                double converted_size = convert_bytes(entry.size, schema_arguments.size_units);
-                return vformat(this->string_format, make_format_args(index, entry.name, converted_size, schema_arguments.size_units));
+                double converted_size = convert_bytes(entry.size, this->_schema_arguments.size_units);
+                return vformat(this->string_format, make_format_args(index, entry.name, converted_size, this->_schema_arguments.size_units));
             }
         }
         void print(ostream& stream) override {
@@ -130,7 +133,8 @@ namespace plantuml_schema_ns {
         return ASCII;
     }
 
-    void get_schema_arguments(cli_arguments_ns::CliArguments* cli_arguments) {
+    SchemaArguments& get_schema_arguments(cli_arguments_ns::CliArguments* cli_arguments) {
+        SchemaArguments& schema_arguments = plantuml_schema_ns::schema_arguments;
         schema_arguments.path = string(*cli_arguments->path);
 
         if (cli_arguments->output_path != nullptr) {
@@ -154,12 +158,14 @@ namespace plantuml_schema_ns {
             case 'g': schema_arguments.size_units = "GB" ;break;
         }
         cout << "Created schema_arguments: " << schema_arguments.output_type << " " << schema_arguments.size_units << endl;
+
+        return schema_arguments;
     }
 
     void create_schema(vector<recursive_scan_ns::FilesystemEntry>& sequence, cli_arguments_ns::CliArguments* cli_arguments, ostream& out_stream) {
         // must create a stream, where the plantuml code will be written, 
         // after that this code will be used within the bash script: "echo $1 | java -jar plantuml -pipe"
-        get_schema_arguments(cli_arguments); // creates schema_arguments from cli_arguments
+        SchemaArguments schema_arguments = get_schema_arguments(cli_arguments); // creates schema_arguments from cli_arguments
 
         switch (schema_arguments.schema_type) {
             case TREE: create_tree_schema(sequence, out_stream); break;
