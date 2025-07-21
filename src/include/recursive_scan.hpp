@@ -22,5 +22,5 @@ namespace recursive_scan_ns {
 
     FilesystemEntry* createFilesystemEntry(uint8_t depth, string name, EntryType type = FILE, uintmax_t size = 0);
     
-    vector<FilesystemEntry>* scan(string& root_path);
+    vector<FilesystemEntry>& scan(string& root_path);
 }

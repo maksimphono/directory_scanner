@@ -48,7 +48,7 @@ namespace cli_arguments_ns {
     };
     CliArguments cli_arguments;
 
-    CliArguments* get_cli_arguments(int n_args, const char** v_args) {
+    CliArguments& get_cli_arguments(int n_args, const char** v_args) {
         // method, that records all cli arguments directly from the main function
         string* raw_arguments[n_args - 1];
         char value = 0;
@@ -94,6 +94,6 @@ namespace cli_arguments_ns {
 
         cli_arguments.path = new string(v_args[1]);
     
-        return &cli_arguments;
+        return cli_arguments;
     }
 }

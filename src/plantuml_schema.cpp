@@ -139,25 +139,25 @@ namespace plantuml_schema_ns {
         return ASCII;
     }
 
-    SchemaArguments& get_schema_arguments(cli_arguments_ns::CliArguments* cli_arguments) {
+    SchemaArguments& get_schema_arguments(cli_arguments_ns::CliArguments& cli_arguments) {
         SchemaArguments& schema_arguments = plantuml_schema_ns::schema_arguments;
-        schema_arguments.path = string(*cli_arguments->path);
+        schema_arguments.path = string(*cli_arguments.path);
 
-        if (cli_arguments->output_path != nullptr) {
-            //schema_arguments.output_path = string(*cli_arguments->output_path);
-            schema_arguments.output_type = extract_output_file_type(cli_arguments->output_path);
+        if (cli_arguments.output_path != nullptr) {
+            //schema_arguments.output_path = string(*cli_arguments.output_path);
+            schema_arguments.output_type = extract_output_file_type(cli_arguments.output_path);
         } else {
             schema_arguments.output_type = ASCII;
         }
 
-        if (cli_arguments->size_units != '\0') {
+        if (cli_arguments.size_units != '\0') {
             schema_arguments.show_size = true;
         } else
             schema_arguments.show_size = false;
 
-        schema_arguments.schema_type = cli_arguments->type == 'b'?BOX:TREE;
+        schema_arguments.schema_type = cli_arguments.type == 'b'?BOX:TREE;
         
-        switch (cli_arguments->size_units) {
+        switch (cli_arguments.size_units) {
             case 'b': schema_arguments.size_units = "B" ;break;
             case 'k': schema_arguments.size_units = "KB" ;break;
             case 'm': schema_arguments.size_units = "MB" ;break;
@@ -168,7 +168,7 @@ namespace plantuml_schema_ns {
         return schema_arguments;
     }
 
-    void create_schema(vector<recursive_scan_ns::FilesystemEntry>& sequence, cli_arguments_ns::CliArguments* cli_arguments, ostream& out_stream) {
+    void create_schema(vector<recursive_scan_ns::FilesystemEntry>& sequence, cli_arguments_ns::CliArguments& cli_arguments, ostream& out_stream) {
         // must create a stream, where the plantuml code will be written, 
         // after that this code will be used within the bash script: "echo $1 | java -jar plantuml -pipe"
         SchemaArguments& schema_arguments = get_schema_arguments(cli_arguments); // creates schema_arguments from cli_arguments

@@ -41,5 +41,5 @@ namespace cli_arguments_ns {
         string* output_path = nullptr;
     } CliArguments;
 
-    CliArguments* get_cli_arguments(int , const char**);
+    CliArguments& get_cli_arguments(int , const char**);
 }

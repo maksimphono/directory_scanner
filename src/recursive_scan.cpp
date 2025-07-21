@@ -21,7 +21,7 @@ namespace recursive_scan_ns {
         return created;
     }
 
-    vector<FilesystemEntry>* scan(string& root_path) {
+    vector<FilesystemEntry>& scan(string& root_path) {
         const fs::path path = fs::path(root_path);
         uintmax_t top_entry_size = 0;
         vector<FilesystemEntry>& filesystem_entries = recursive_scan_ns::filesystem_entries;
@@ -81,13 +81,13 @@ namespace recursive_scan_ns {
             for (const auto& elem : filesystem_entries) {
                 cout << elem.name << " " << elem.type << ":" << (uint)elem.depth << " ";
             }
-            return &filesystem_entries;
+            return filesystem_entries;
 
         } catch (const fs::filesystem_error& e) {
             cerr << "Filesystem error: " << e.what() << endl;
         } catch (const exception& e) {
             cerr << "General error: " << e.what() << endl;
         }
-        return &filesystem_entries;
+        return filesystem_entries;
     }
 }

@@ -61,8 +61,8 @@ MMMMMMMMMMMMMMMMl              .,'.   ...''',;;::,,,',;;'....                   
 
 int main(int n_args, const char** v_args) {
     try {
-        cli_arguments_ns::CliArguments* args = cli_arguments_ns::get_cli_arguments(n_args, v_args);
-        vector<recursive_scan_ns::FilesystemEntry>& seq = *recursive_scan_ns::scan(*args->path);
+        cli_arguments_ns::CliArguments& args = cli_arguments_ns::get_cli_arguments(n_args, v_args);
+        vector<recursive_scan_ns::FilesystemEntry>& seq = recursive_scan_ns::scan(*args.path);
         plantuml_schema_ns::create_schema(seq, args);
     } catch(const exception& exp) {
         // gracefully exiting with error
