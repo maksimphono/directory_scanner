@@ -8,18 +8,6 @@
 //using namespace ;
 using namespace std;
 
-vector<recursive_scan_ns::FilesystemEntry>& convert_units(vector<recursive_scan_ns::FilesystemEntry>& sequence, string& units) {
-    if (units == "B") return sequence;
-    for (auto entry = sequence.begin(); entry != sequence.end(); entry++) {
-        switch (units[0]) {
-            case 'K': entry->size_f = bytes2KB(entry->size_i); break;
-            case 'M': entry->size_f = bytes2MB(entry->size_i); break;
-            case 'G': entry->size_f = bytes2GB(entry->size_i); break;
-        }
-    }
-    return sequence;
-}
-
 namespace plantuml_schema_ns {
 
     class PlantUML_TreeSchema : public PlantUMLSchema {
@@ -34,10 +22,7 @@ namespace plantuml_schema_ns {
             // here must be logic, that creates format for each created string
             // and gather overall informationfrom the sequence of entries
             if (schema_arguments.show_size) {
-                if (schema_arguments.size_units == "B")
-                    this->string_format = "{0} ({1} {2})";
-                else
-                    this->string_format = "{0} ({1:f} {2})";
+                this->string_format = "{0} ({1} {2})";
             }
         }
         string construct_plantUML_string(const recursive_scan_ns::FilesystemEntry& entry) {
@@ -46,10 +31,7 @@ namespace plantuml_schema_ns {
 
             plantuml_string.assign(entry.depth + 1, '*');
             plantuml_string += " ";
-            if (schema_arguments.size_units == "B")
-                plantuml_string += vformat(this->string_format, make_format_args(entry.name, entry.size_i, schema_arguments.size_units)); // was forced to do so, using regular std::format the same way as in the documentation (https://en.cppreference.com/w/cpp/utility/format/format.html) produce error "...`string_format` is not a constant expression...", idk why
-            else
-                plantuml_string += vformat(this->string_format, make_format_args(entry.name, entry.size_f, schema_arguments.size_units)); // was forced to do so, using regular std::format the same way as in the documentation (https://en.cppreference.com/w/cpp/utility/format/format.html) produce error "...`string_format` is not a constant expression...", idk why
+            plantuml_string += vformat(this->string_format, make_format_args(entry.name, entry.size, schema_arguments.size_units)); // was forced to do so, using regular std::format the same way as in the documentation (https://en.cppreference.com/w/cpp/utility/format/format.html) produce error "...`string_format` is not a constant expression...", idk why
 
             return plantuml_string;
         }
@@ -77,18 +59,12 @@ namespace plantuml_schema_ns {
             // TODO: create format based on the schema_arguments
 
             if (schema_arguments.show_size)
-                if (schema_arguments.size_units == "B")
-                    this->string_format = "state \"{1} ({2} {3})\" as S{0}";
-                else
-                    this->string_format = "state \"{1} ({2:f} {3})\" as S{0}";
+                this->string_format = "state \"{1} ({2} {3})\" as S{0}";
             // here must be logic, that creates format for each created string
             // and gather overall informationfrom the sequence of entries
         }
         string construct_plantUML_string(uint8_t index, recursive_scan_ns::FilesystemEntry& entry) {
-            if (schema_arguments.size_units == "B")
-                return vformat(this->string_format, make_format_args(index, entry.name, entry.size_i, schema_arguments.size_units));
-            else
-                return vformat(this->string_format, make_format_args(index, entry.name, entry.size_f, schema_arguments.size_units));
+            return vformat(this->string_format, make_format_args(index, entry.name, entry.size, schema_arguments.size_units));
         }
         void print(ostream& stream) override {
             stream << "@startuml\n";
@@ -168,8 +144,6 @@ namespace plantuml_schema_ns {
         // must create a stream, where the plantuml code will be written, 
         // after that this code will be used within the bash script: "echo $1 | java -jar plantuml -pipe"
         get_schema_arguments(cli_arguments); // creates schema_arguments from cli_arguments
-
-        convert_units(sequence, schema_arguments.size_units);
 
         switch (schema_arguments.schema_type) {
             case TREE: create_tree_schema(sequence, out_stream); break;

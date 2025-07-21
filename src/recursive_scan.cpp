@@ -15,7 +15,7 @@ namespace recursive_scan_ns {
         created->depth = depth;
         created->name = name;
         created->type = type;
-        created->size_i = size;
+        created->size = size;
         cout << "Size: " << size << endl;
 
         return created;
@@ -45,9 +45,9 @@ namespace recursive_scan_ns {
                 } else while (depth < entries_stack.size()) {
                     // exiting directory by popping entries from the stack
                     cout << "Exeting directory " << filesystem_entries.at(entries_stack.top()).name << "\n";
-                    top_entry_size = filesystem_entries[entries_stack.top()].size_i;
+                    top_entry_size = filesystem_entries[entries_stack.top()].size;
                     entries_stack.pop();
-                    filesystem_entries[entries_stack.top()].size_i += top_entry_size;
+                    filesystem_entries[entries_stack.top()].size += top_entry_size;
                 }
 
                 if (fs::is_directory(currentPath)) { // if it's a directory
@@ -56,8 +56,8 @@ namespace recursive_scan_ns {
                     created_entry->type = SYMLINK;
                 } else if (fs::is_regular_file(currentPath)) {
                     created_entry->type = FILE;
-                    created_entry->size_i = fs::file_size(currentPath);
-                    filesystem_entries[entries_stack.top()].size_i += created_entry->size_i;
+                    created_entry->size = fs::file_size(currentPath);
+                    filesystem_entries[entries_stack.top()].size += created_entry->size;
                 }
 
                 filesystem_entries.push_back(*created_entry);
@@ -70,9 +70,9 @@ namespace recursive_scan_ns {
             while (1 < entries_stack.size()) {
                 // exiting directory by popping entries from the stack
                 cout << "Exeting directory " << filesystem_entries.at(entries_stack.top()).name << "\n";
-                top_entry_size = filesystem_entries[entries_stack.top()].size_i;
+                top_entry_size = filesystem_entries[entries_stack.top()].size;
                 entries_stack.pop();
-                filesystem_entries[entries_stack.top()].size_i += top_entry_size;
+                filesystem_entries[entries_stack.top()].size += top_entry_size;
             }
 
             //filesystem_entries[0].size += filesystem_entries[entries_stack.top()].size;

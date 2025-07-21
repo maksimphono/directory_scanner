@@ -16,10 +16,7 @@ namespace recursive_scan_ns {
     typedef struct {
         uint8_t depth;
         string name;
-        union {
-            uintmax_t size_i;
-            double size_f;
-        };
+        uintmax_t size;
         EntryType type;
     } FilesystemEntry;
 
