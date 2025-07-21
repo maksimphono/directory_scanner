@@ -25,6 +25,7 @@ namespace plantuml_schema_ns {
 
     class PlantUMLSchema_abstract {
     public:
+        string default_format = "{0}";
         virtual ~PlantUMLSchema_abstract() {}
         virtual void print(ostream& stream) = 0;
     };

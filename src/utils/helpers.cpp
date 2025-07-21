@@ -12,9 +12,9 @@ string repeat(string str, uint8_t times) { // repeat srting n times
 
 inline double bytes2KB(uintmax_t& bytes_num) { return (double)bytes_num / 10; }
 
-inline double bytes2MB(uintmax_t& bytes_num) { return (double)bytes_num / pow(1024, 2); }
+inline double bytes2MB(uintmax_t& bytes_num) { return (double)bytes_num / 1048576; }
 
-inline double bytes2GB(uintmax_t& bytes_num) { return (double)bytes_num / pow(1024, 3); }
+inline double bytes2GB(uintmax_t& bytes_num) { return (double)bytes_num / 1073741824; }
 
 double convert_bytes(uintmax_t& bytes_num, string& units) {
     switch (units[0]) {
