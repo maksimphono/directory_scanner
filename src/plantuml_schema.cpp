@@ -17,21 +17,30 @@ namespace plantuml_schema_ns {
     public:
         PlantUML_TreeSchema(vector<recursive_scan_ns::FilesystemEntry>& sequence) : sequence(sequence) {
             this->string_format = "{0}";
-            // TODO: create format based on the schema_arguments
 
             // here must be logic, that creates format for each created string
             // and gather overall informationfrom the sequence of entries
             if (schema_arguments.show_size) {
-                this->string_format = "{0} ({1} {2})";
+                if (schema_arguments.size_units == "B")
+                    this->string_format = "{0} ({1} {2})";
+                else
+                    this->string_format = "{0} ({1:.2f} {2})";
             }
         }
-        string construct_plantUML_string(const recursive_scan_ns::FilesystemEntry& entry) {
+        string format_entry(recursive_scan_ns::FilesystemEntry& entry) {
+            if (schema_arguments.size_units == "B") {
+                return vformat(this->string_format, make_format_args(entry.name, entry.size, schema_arguments.size_units)); // was forced to do so, using regular std::format the same way as in the documentation (https://en.cppreference.com/w/cpp/utility/format/format.html) produce error "...`string_format` is not a constant expression...", idk why
+            } else {
+                double converted_size = convert_bytes(entry.size, schema_arguments.size_units);
+                return vformat(this->string_format, make_format_args(entry.name, converted_size, schema_arguments.size_units));
+            }
+        }
+        string construct_plantUML_string(recursive_scan_ns::FilesystemEntry& entry) {
             string plantuml_string = string();
-            double size;
 
-            plantuml_string.assign(entry.depth + 1, '*');
+            plantuml_string += repeat("*", entry.depth + 1);
             plantuml_string += " ";
-            plantuml_string += vformat(this->string_format, make_format_args(entry.name, entry.size, schema_arguments.size_units)); // was forced to do so, using regular std::format the same way as in the documentation (https://en.cppreference.com/w/cpp/utility/format/format.html) produce error "...`string_format` is not a constant expression...", idk why
+            plantuml_string += this->format_entry(entry);
 
             return plantuml_string;
         }
@@ -39,7 +48,7 @@ namespace plantuml_schema_ns {
             // will output entire plantuml code into the provided stream
             stream << "@startmindmap\n";
 
-            for (const auto& plantuml_entry : this->sequence) {
+            for (auto& plantuml_entry : this->sequence) {
                 stream
                     << this->construct_plantUML_string(plantuml_entry)
                     << endl;
@@ -56,15 +65,22 @@ namespace plantuml_schema_ns {
     public:
         PlantUML_BoxSchema(vector<recursive_scan_ns::FilesystemEntry>& sequence) : sequence(sequence) {
             this->string_format = "state \"{1}\" as S{0}";
-            // TODO: create format based on the schema_arguments
 
             if (schema_arguments.show_size)
-                this->string_format = "state \"{1} ({2} {3})\" as S{0}";
+                if (schema_arguments.size_units == "B")
+                    this->string_format = "state \"{1} ({2} {3})\" as S{0}";
+                else
+                    this->string_format = "state \"{1} ({2:.2f} {3})\" as S{0}";
             // here must be logic, that creates format for each created string
             // and gather overall informationfrom the sequence of entries
         }
         string construct_plantUML_string(uint8_t index, recursive_scan_ns::FilesystemEntry& entry) {
-            return vformat(this->string_format, make_format_args(index, entry.name, entry.size, schema_arguments.size_units));
+            if (schema_arguments.size_units == "B") {
+                return vformat(this->string_format, make_format_args(index, entry.name, entry.size, schema_arguments.size_units)); // was forced to do so, using regular std::format the same way as in the documentation (https://en.cppreference.com/w/cpp/utility/format/format.html) produce error "...`string_format` is not a constant expression...", idk why
+            } else {
+                double converted_size = convert_bytes(entry.size, schema_arguments.size_units);
+                return vformat(this->string_format, make_format_args(index, entry.name, converted_size, schema_arguments.size_units));
+            }
         }
         void print(ostream& stream) override {
             stream << "@startuml\n";
