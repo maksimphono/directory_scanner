@@ -22,16 +22,21 @@ namespace plantuml_schema_ns {
 
             // here must be logic, that creates format for each created string
             // and gather overall informationfrom the sequence of entries
+            if (this->_schema_arguments.show_color) {
+                this->string_format = "[{2}] " + this->string_format;
+            }
             if (this->_schema_arguments.show_size) {
                 if (this->_schema_arguments.size_units == "B")
-                    this->string_format = "{0} ({1} {2})";
+                    this->string_format += " ({1} {2})";
                 else
-                    this->string_format = "{0} ({1:.2f} {2})";
+                    this->string_format += " ({1:.2f} {2})";
             }
         }
         string format_entry(recursive_scan_ns::FilesystemEntry& entry) {
+            int a = 0, b = 0, c = 0;
+            const char* v = "#fdf";
             if (entry.size == 0) {
-                return vformat(this->default_format, make_format_args(entry.name)); // was forced to do so, using regular std::format the same way as in the documentation (https://en.cppreference.com/w/cpp/utility/format/format.html) produce error "...`string_format` is not a constant expression...", idk why
+                return vformat(this->string_format, make_format_args(entry.name, a, b)); // was forced to do so, using regular std::format the same way as in the documentation (https://en.cppreference.com/w/cpp/utility/format/format.html) produce error "...`string_format` is not a constant expression...", idk why
             }
             if (this->_schema_arguments.size_units == "B") {
                 return vformat(this->string_format, make_format_args(entry.name, entry.size, this->_schema_arguments.size_units));
@@ -184,7 +189,6 @@ namespace plantuml_schema_ns {
         }
         cout << "Created schema_arguments: " << schema_arguments.output_type << " " << schema_arguments.size_units << endl;
 
-        scanf("%d");
         return schema_arguments;
     }
 
