@@ -14,42 +14,53 @@ namespace plantuml_schema_ns {
     class PlantUML_TreeSchema : public PlantUMLSchema {
     private:
         SchemaArguments& _schema_arguments = plantuml_schema_ns::schema_arguments;
-        string string_format = PlantUMLSchema::default_format;
+        struct {
+            string color = "";
+            string size_int = "";
+            string size_float = "";
+            string name = "{0}";
+        } string_format;
         vector<recursive_scan_ns::FilesystemEntry>& sequence;
     public:
         PlantUML_TreeSchema(vector<recursive_scan_ns::FilesystemEntry>& sequence) : sequence(sequence) {
-            this->string_format = "{0}";
-
             // here must be logic, that creates format for each created string
             // and gather overall informationfrom the sequence of entries
             if (this->_schema_arguments.show_color) {
-                this->string_format = "[{2}] " + this->string_format;
+                this->string_format.color = "[{0}]";
             }
             if (this->_schema_arguments.show_size) {
                 if (this->_schema_arguments.size_units == "B")
-                    this->string_format += " ({1} {2})";
+                    this->string_format.size_int = "({0} {1})";
                 else
-                    this->string_format += " ({1:.2f} {2})";
+                    this->string_format.size_float = "({0:.2f} {1})";
             }
         }
         string format_entry(recursive_scan_ns::FilesystemEntry& entry) {
-            int a = 0, b = 0, c = 0;
-            const char* v = "#fdf";
-            if (entry.size == 0) {
-                return vformat(this->string_format, make_format_args(entry.name, a, b)); // was forced to do so, using regular std::format the same way as in the documentation (https://en.cppreference.com/w/cpp/utility/format/format.html) produce error "...`string_format` is not a constant expression...", idk why
+            string result = "";
+            string ada = "#adaada";
+
+            if (this->_schema_arguments.show_color) {
+                result += vformat(this->string_format.color, make_format_args(ada)); // was forced to do so, using regular std::format the same way as in the documentation (https://en.cppreference.com/w/cpp/utility/format/format.html) produce error "...`string_format` is not a constant expression...", idk why
             }
-            if (this->_schema_arguments.size_units == "B") {
-                return vformat(this->string_format, make_format_args(entry.name, entry.size, this->_schema_arguments.size_units));
-            } else {
-                double converted_size = convert_bytes(entry.size, this->_schema_arguments.size_units);
-                return vformat(this->string_format, make_format_args(entry.name, converted_size, this->_schema_arguments.size_units));
+            result += " ";
+            result += vformat(this->string_format.name, make_format_args(entry.name));
+            result += " ";
+            if (this->_schema_arguments.show_size) {
+                if (entry.size != 0) {
+                    if (this->_schema_arguments.size_units == "B") {
+                        result += vformat(this->string_format.size_int, make_format_args(entry.size, this->_schema_arguments.size_units));
+                    } else {
+                        double converted_size = convert_bytes(entry.size, this->_schema_arguments.size_units);
+                        result += vformat(this->string_format.size_float, make_format_args(converted_size, this->_schema_arguments.size_units));
+                    }
+                }
             }
+            return result;
         }
         string construct_plantUML_string(recursive_scan_ns::FilesystemEntry& entry) {
             string plantuml_string = string();
 
             plantuml_string += repeat("*", entry.depth + 1);
-            plantuml_string += " ";
             plantuml_string += this->format_entry(entry);
 
             return plantuml_string;
