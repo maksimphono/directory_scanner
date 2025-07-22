@@ -26,9 +26,9 @@ namespace color_scale_ns {
             int r = 0, g = 0, b = 0;
             sscanf(s.c_str(), "#%2x%2x%2x", &r, &g, &b);
 
-            this->vector_rgb[0] = (int16_t)r;
-            this->vector_rgb[1] = (int16_t)g;
-            this->vector_rgb[2] = (int16_t)b;
+            this->vector_rgb[R] = (int16_t)r;
+            this->vector_rgb[G] = (int16_t)g;
+            this->vector_rgb[B] = (int16_t)b;
         }
         string str() {
             if (this->rgb()[R] < 0 || this->rgb()[G] < 0 || this->rgb()[B] < 0) return string("#000000");
@@ -91,7 +91,7 @@ namespace color_scale_ns {
     } State;
     State state;
 
-    Color convert_to_color(uintmax_t size, State& state = color_scale_ns::state) {
+    Color size2color(uintmax_t size, State& state = color_scale_ns::state) {
         double dm = state.max_mem_size - state.min_mem_size;
         Color d_color = state.end_color - state.start_color;
 
@@ -103,7 +103,7 @@ using namespace color_scale_ns;
 int main() {
     Color c1 = Color(2,3,4);
     Color c2 = Color(1,2,3);
-    c2 = convert_to_color(70);
+    c2 = size2color(70);
     c1 = (c1 - c2);
     cout << Color("#ff0465").str();
     //printf("#%d %d %d", c2.rgb()[0], c2.rgb()[1], c2.rgb()[2]);
