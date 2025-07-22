@@ -38,6 +38,8 @@ namespace cli_arguments_ns {
         string* path = nullptr;
         char type = 't'; // b | t
         char size_units = '\0'; // b | k | m | g
+        string start_color = "#0000ff"; // blue
+        string end_color = "#ff0000"; // red
         string* output_path = nullptr;
     } CliArguments;
 
