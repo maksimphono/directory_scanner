@@ -82,30 +82,57 @@ namespace plantuml_schema_ns {
     class PlantUML_BoxSchema : public PlantUMLSchema {
     private:
         SchemaArguments& _schema_arguments = plantuml_schema_ns::schema_arguments;
-        string string_format = PlantUMLSchema::default_format;
+        struct {
+            string color = "";
+            string size = "";
+            string name = "{1}";
+            string index = "as S{0}";
+        } string_format;
         vector<recursive_scan_ns::FilesystemEntry>& sequence;
     public:
         PlantUML_BoxSchema(vector<recursive_scan_ns::FilesystemEntry>& sequence) : sequence(sequence) {
-            this->string_format = "state \"{1}\" as S{0}";
-            this->default_format = "state \"{1}\" as S{0}";
+            this->string_format.name = "\"{0}\"";
 
-            if (this->_schema_arguments.show_size)
+            if (this->_schema_arguments.show_color) {
+                this->string_format.color = "{0}";
+            }
+            if (this->_schema_arguments.show_size) {
+                this->string_format.name = "\"{0}";
                 if (this->_schema_arguments.size_units == "B")
-                    this->string_format = "state \"{1} ({2} {3})\" as S{0}";
+                    this->string_format.size = "({0} {1})";
                 else
-                    this->string_format = "state \"{1} ({2:.2f} {3})\" as S{0}";
+                    this->string_format.size = "({0:.2f} {1})";
+            }
             // here must be logic, that creates format for each created string
             // and gather overall informationfrom the sequence of entries
         }
         string construct_plantUML_string(uint8_t index, recursive_scan_ns::FilesystemEntry& entry) {
-            if (entry.size == 0)
-                return vformat(this->default_format, make_format_args(index, entry.name));
-            if (this->_schema_arguments.size_units == "B") {
-                return vformat(this->string_format, make_format_args(index, entry.name, entry.size, this->_schema_arguments.size_units)); // was forced to do so, using regular std::format the same way as in the documentation (https://en.cppreference.com/w/cpp/utility/format/format.html) produce error "...`string_format` is not a constant expression...", idk why
-            } else {
-                double converted_size = convert_bytes(entry.size, this->_schema_arguments.size_units);
-                return vformat(this->string_format, make_format_args(index, entry.name, converted_size, this->_schema_arguments.size_units));
+            string result = "state ";
+
+            result += vformat(this->string_format.name, make_format_args(entry.name));
+
+            if (this->_schema_arguments.show_size) {
+                if (entry.size != 0) {
+                    result += " ";
+                    if (this->_schema_arguments.size_units == "B") {
+                        result += vformat(this->string_format.size, make_format_args(entry.size, this->_schema_arguments.size_units)); // was forced to do so, using regular std::format the same way as in the documentation (https://en.cppreference.com/w/cpp/utility/format/format.html) produce error "...`string_format` is not a constant expression...", idk why
+                    } else {
+                        double converted_size = convert_bytes(entry.size, this->_schema_arguments.size_units);
+                        result += vformat(this->string_format.size, make_format_args(converted_size, this->_schema_arguments.size_units));
+                    }
+                }
+                result += "\"";
             }
+
+            result += " ";
+            result += vformat(this->string_format.index, make_format_args(index));
+            result += " ";
+
+            if (this->_schema_arguments.show_color) {
+                result += vformat(this->string_format.color, make_format_args("#afdaed"));
+            }
+
+            return result;
         }
         void print(ostream& stream) override {
             stream << "@startuml\n";
