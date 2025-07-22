@@ -139,7 +139,7 @@ namespace plantuml_schema_ns {
         return ASCII;
     }
 
-    SchemaArguments& get_schema_arguments(cli_arguments_ns::CliArguments& cli_arguments) {
+    SchemaArguments& get_schema_arguments(cli_arguments_ns::CliArguments& cli_arguments, vector<recursive_scan_ns::FilesystemEntry>& sequence) {
         SchemaArguments& schema_arguments = plantuml_schema_ns::schema_arguments;
         schema_arguments.path = string(*cli_arguments.path);
 
@@ -156,22 +156,42 @@ namespace plantuml_schema_ns {
             schema_arguments.show_size = false;
 
         schema_arguments.schema_type = cli_arguments.type == 'b'?BOX:TREE;
-        
+
         switch (cli_arguments.size_units) {
             case 'b': schema_arguments.size_units = "B" ;break;
             case 'k': schema_arguments.size_units = "KB" ;break;
             case 'm': schema_arguments.size_units = "MB" ;break;
             case 'g': schema_arguments.size_units = "GB" ;break;
         }
+
+        if (cli_arguments.start_color != "" && cli_arguments.end_color != "") {
+            uintmax_t min_mem_size = SIZE_MAX;
+            uintmax_t max_mem_size = 0;
+
+            schema_arguments.show_color = true;
+            schema_arguments.color_state.start_color = Color(cli_arguments.start_color);
+            schema_arguments.color_state.end_color = Color(cli_arguments.end_color);
+
+            for (const auto& entry : sequence) {
+                if (entry.size > max_mem_size) max_mem_size = entry.size;
+                else if (entry.size < min_mem_size) min_mem_size = entry.size;
+            }
+
+            schema_arguments.color_state.min_mem_size = min_mem_size;
+            schema_arguments.color_state.max_mem_size = max_mem_size;
+
+            cout << "Color state: " << schema_arguments.color_state.min_mem_size << schema_arguments.color_state.max_mem_size << schema_arguments.color_state.start_color.str() << schema_arguments.color_state.end_color.str() << endl;
+        }
         cout << "Created schema_arguments: " << schema_arguments.output_type << " " << schema_arguments.size_units << endl;
 
+        scanf("%d");
         return schema_arguments;
     }
 
     void create_schema(vector<recursive_scan_ns::FilesystemEntry>& sequence, cli_arguments_ns::CliArguments& cli_arguments, ostream& out_stream) {
         // must create a stream, where the plantuml code will be written, 
         // after that this code will be used within the bash script: "echo $1 | java -jar plantuml -pipe"
-        SchemaArguments& schema_arguments = get_schema_arguments(cli_arguments); // creates schema_arguments from cli_arguments
+        SchemaArguments& schema_arguments = get_schema_arguments(cli_arguments, sequence); // creates schema_arguments from cli_arguments
         PlantUMLSchema* schema = nullptr;
 
         switch (schema_arguments.schema_type) {

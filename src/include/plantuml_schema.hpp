@@ -3,15 +3,20 @@
 #include <format>
 #include <iostream>
 #include <string>
+
 #include "recursive_scan.hpp"
 #include "cli_arguments.hpp"
+#include "color_scale.hpp"
 
 using namespace std;
 //using namespace recursive_scan_ns;
+using namespace color_scale_ns;
+typedef color_scale_ns::State ColorScaleState;
 
 namespace plantuml_schema_ns {
     typedef enum {ASCII, JPG, PNG, SVG, PDF} OutputType;
     typedef enum {TREE, BOX} SchemaType;
+    enum {start, end};
 
     OutputType extract_output_file_type(string* output_path);
 
@@ -20,6 +25,8 @@ namespace plantuml_schema_ns {
         SchemaType schema_type = TREE;
         bool show_size = false;
         string size_units; // B | KB | MB | GB
+        bool show_color = false;
+        ColorScaleState color_state;
         OutputType output_type = ASCII;
     } SchemaArguments;
 
