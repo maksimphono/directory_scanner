@@ -1,3 +1,5 @@
 test
 exec
 root
+src/sh/plantuml.jar
+src/sh/*.o

@@ -1,0 +1,6 @@
+#!/bin/bash
+
+PLANTUML_SCRIPT="java -jar plantuml.jar -pipe > out.png"
+#ORIGINAL_ARGS=("$@")
+
+$PLANTUML_SCRIPT # ${ORIGINAL_ARGS[@]}
