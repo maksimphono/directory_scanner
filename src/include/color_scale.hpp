@@ -85,6 +85,7 @@ namespace color_scale_ns {
         uintmax_t min_mem_size = 0;
         Color start_color;
         Color end_color;
+        Color DEFAULT_COLOR = Color("#ffffff");
     } State;
 
     Color size2color(uintmax_t size, State& state);

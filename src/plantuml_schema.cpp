@@ -35,12 +35,20 @@ namespace plantuml_schema_ns {
                     this->string_format.size_float = "({0:.2f} {1})";
             }
         }
+        string create_color_string(recursive_scan_ns::FilesystemEntry& entry) {
+            string color_str;
+
+            if (entry.size == 0)
+                color_str = this->_schema_arguments.color_state.DEFAULT_COLOR.str();
+            else
+                color_str = size2color(entry.size, this->_schema_arguments.color_state).str();
+            return vformat(this->string_format.color, make_format_args(color_str));
+        }
         string format_entry(recursive_scan_ns::FilesystemEntry& entry) {
             string result = "";
-            string color_str = size2color(entry.size, this->_schema_arguments.color_state).str();
 
             if (this->_schema_arguments.show_color) {
-                result += vformat(this->string_format.color, make_format_args(color_str)); // was forced to do so, using regular std::format the same way as in the documentation (https://en.cppreference.com/w/cpp/utility/format/format.html) produce error "...`string_format` is not a constant expression...", idk why
+                result += create_color_string(entry);
             }
             result += " ";
             result += vformat(this->string_format.name, make_format_args(entry.name));
@@ -106,6 +114,15 @@ namespace plantuml_schema_ns {
             // here must be logic, that creates format for each created string
             // and gather overall informationfrom the sequence of entries
         }
+        string create_color_string(recursive_scan_ns::FilesystemEntry& entry) {
+            string color_str;
+
+            if (entry.size == 0)
+                color_str = this->_schema_arguments.color_state.DEFAULT_COLOR.str();
+            else
+                color_str = size2color(entry.size, this->_schema_arguments.color_state).str();
+            return vformat(this->string_format.color, make_format_args(color_str));
+        }
         string construct_plantUML_string(uint8_t index, recursive_scan_ns::FilesystemEntry& entry) {
             string result = "state ";
 
@@ -129,8 +146,7 @@ namespace plantuml_schema_ns {
             result += " ";
 
             if (this->_schema_arguments.show_color) {
-                string color_str = size2color(entry.size, this->_schema_arguments.color_state).str();
-                result += vformat(this->string_format.color, make_format_args(color_str));
+                result += this->create_color_string(entry);
             }
 
             return result;
@@ -216,9 +232,10 @@ namespace plantuml_schema_ns {
             schema_arguments.color_state.start_color = Color(cli_arguments.start_color);
             schema_arguments.color_state.end_color = Color(cli_arguments.end_color);
 
-            for (const auto& entry : sequence) {
-                if (entry.size > max_mem_size) max_mem_size = entry.size;
-                else if (entry.size < min_mem_size) min_mem_size = entry.size;
+            for (auto entry = sequence.begin() + 1; entry != sequence.end(); entry++) {
+                if (entry->size == 0) continue;
+                if (entry->size > max_mem_size) max_mem_size = entry->size;
+                else if (entry->size < min_mem_size) min_mem_size = entry->size;
             }
 
             schema_arguments.color_state.min_mem_size = min_mem_size;
