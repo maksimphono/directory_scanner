@@ -36,7 +36,7 @@ namespace cli_arguments_ns {
     typedef struct {
         // dedicated structure, that will store values of every arguments
         string* path = nullptr;
-        char type = 't'; // b | t
+        char type = 't'; // box | tree
         char size_units = '\0'; // b | k | m | g
         string start_color = ""; // blue
         string end_color = ""; // red

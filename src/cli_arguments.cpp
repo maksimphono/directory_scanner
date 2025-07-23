@@ -49,10 +49,28 @@ namespace cli_arguments_ns {
     };
     CliArguments cli_arguments;
 
+    void set_argument_color(CliArguments& cli_arguments, const char** v_args, uint8_t& i) {
+        string raw_argument = string(v_args[i]);
+        char* start_color = new char[8], *end_color = new char[8];
+        string value = v_args[++i];
+
+        sscanf(value.c_str(), "%7s-%7s", start_color, end_color);
+        cli_arguments.start_color = start_color;
+        cli_arguments.end_color = end_color;
+    }
+    void set_argument_type(CliArguments& cli_arguments, const char** v_args, uint8_t& i) {
+        char value = *v_args[++i];
+
+        if (value != 'b' && value != 't')
+            // TODO: implement more informative error message
+            throw ArgumentException("type (-t) argument must be set to 'b' (box) or 't' (tree)");
+        else
+            cli_arguments.type = value;
+    }
+
     CliArguments& get_cli_arguments(int n_args, const char** v_args) {
         // method, that records all cli arguments directly from the main function
         CliArguments& cli_arguments = cli_arguments_ns::cli_arguments;
-        string* raw_arguments[n_args - 1];
 
         for (uint8_t i = 2; i < n_args; i++) {
             const string raw_argument = v_args[i];
@@ -60,16 +78,12 @@ namespace cli_arguments_ns {
 
             if (raw_argument.substr(0, 2) == "--") {
                 const string arg_name = raw_argument.substr(2);
-                string value;
 
                 if (arg_name == "color") {
-                    char* start_color = new char[8], *end_color = new char[8];
-
-                    value = v_args[++i];
-                    sscanf(value.c_str(), "%7s-%7s", start_color, end_color);
-
-                    cli_arguments.start_color = start_color;
-                    cli_arguments.end_color = end_color;
+                    set_argument_color(cli_arguments, v_args, i);
+                }
+                else if (arg_name == "type") {
+                    set_argument_type(cli_arguments, v_args, i);
                 }
             } else if (raw_argument[0] == '-') {
                 // this is an argument declaration
@@ -79,27 +93,18 @@ namespace cli_arguments_ns {
                     switch (arg_name) {
                         // checking the symbol, that comes after the '-'
                         case 't': // type specified
-                            value = *v_args[++i];
-
-                            cout << "Type: " << value << endl;
-                            if (value != 'b' && value != 't')
-                                // TODO: implement more informative error message
-                                throw ArgumentException("type (-t) argument must be set to 'b' (box) or 't' (tree)");
-                            else
-                                cli_arguments.type = value;
+                            set_argument_type(cli_arguments, v_args, i);
                             break;
 
                         case 'b':
                         case 'k':
                         case 'm':
                         case 'g': // doing like that because all these case requies same logic (set of size units)
-                            cout << "Units: " << arg_name << endl;
                             cli_arguments.size_units = arg_name;
                             break;
 
                         case 'o': // output path was specified
                             cli_arguments.output_path = new string(v_args[++i]);
-                            cout << "Output: " << *cli_arguments.output_path << endl;
                             break;
 
                         default:
