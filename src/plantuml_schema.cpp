@@ -18,7 +18,7 @@ namespace plantuml_schema_ns {
             color_str = color_state.DEFAULT_COLOR.str();
         else
             color_str = size2color(entry.size, color_state).str();
-        return vformat(format_color, make_format_args(color_str));
+        return vformat(format_color, make_format_args(color_str));  // was forced to do so, using regular std::format the same way as in the documentation (https://en.cppreference.com/w/cpp/utility/format/format.html) produce error "...`string_format` is not a constant expression...", idk why
     }
 
     class PlantUML_TreeSchema : public PlantUMLSchema {
@@ -33,8 +33,6 @@ namespace plantuml_schema_ns {
         vector<recursive_scan_ns::FilesystemEntry>& sequence;
     public:
         PlantUML_TreeSchema(vector<recursive_scan_ns::FilesystemEntry>& sequence) : sequence(sequence) {
-            // here must be logic, that creates format for each created string
-            // and gather overall informationfrom the sequence of entries
             if (this->_schema_arguments.show_color) {
                 this->string_format.color = "[{0}]";
             }
@@ -113,8 +111,6 @@ namespace plantuml_schema_ns {
                 else
                     this->string_format.size = "({0:.2f} {1})";
             }
-            // here must be logic, that creates format for each created string
-            // and gather overall informationfrom the sequence of entries
         }
         string construct_plantUML_string(uint8_t index, recursive_scan_ns::FilesystemEntry& entry) {
             string result = "state ";
@@ -125,7 +121,7 @@ namespace plantuml_schema_ns {
                 if (entry.size != 0) {
                     result += " ";
                     if (this->_schema_arguments.size_units == "B") {
-                        result += vformat(this->string_format.size, make_format_args(entry.size, this->_schema_arguments.size_units)); // was forced to do so, using regular std::format the same way as in the documentation (https://en.cppreference.com/w/cpp/utility/format/format.html) produce error "...`string_format` is not a constant expression...", idk why
+                        result += vformat(this->string_format.size, make_format_args(entry.size, this->_schema_arguments.size_units));
                     } else {
                         double converted_size = convert_bytes(entry.size, this->_schema_arguments.size_units);
                         result += vformat(this->string_format.size, make_format_args(converted_size, this->_schema_arguments.size_units));
@@ -180,7 +176,6 @@ namespace plantuml_schema_ns {
     };
 
     OutputType extract_output_file_type(string& output_path) {
-        // cout << output_path->substr(output_path->rfind(".") + 1) << endl;
         if (output_path == "") return ASCII;
 
         string ext = output_path.substr(output_path.rfind(".") + 1);
@@ -197,7 +192,6 @@ namespace plantuml_schema_ns {
         schema_arguments.path = string(cli_arguments.path);
 
         if (cli_arguments.output_path != "") {
-            //schema_arguments.output_path = string(*cli_arguments.output_path);
             schema_arguments.output_type = extract_output_file_type(cli_arguments.output_path);
         } else {
             schema_arguments.output_type = ASCII;
@@ -256,15 +250,5 @@ namespace plantuml_schema_ns {
             schema->print(out_stream);
 
         delete schema;
-    }
-
-    void create_tree_schema(vector<recursive_scan_ns::FilesystemEntry>& sequence, ostream& out_stream) {
-        PlantUML_TreeSchema schema = PlantUML_TreeSchema(sequence);
-        schema.print(out_stream);
-    }
-
-    void create_box_schema(vector<recursive_scan_ns::FilesystemEntry>& sequence, ostream& out_stream) {
-        PlantUML_BoxSchema schema = PlantUML_BoxSchema(sequence);
-        schema.print(out_stream);
     }
 }
