@@ -41,8 +41,6 @@ namespace plantuml_schema_ns {
         void print(ostream& stream) override {return;}
     };
 
-    constexpr string plantuml_string_format = "{0}";
-
     string create_color_string(recursive_scan_ns::FilesystemEntry& entry, ColorScaleState& color_state, string& format_color);
 
     SchemaArguments& get_schema_arguments(cli_arguments_ns::CliArguments& cli_arguments);
