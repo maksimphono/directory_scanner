@@ -11,6 +11,16 @@ using namespace std;
 namespace plantuml_schema_ns {
     SchemaArguments schema_arguments;
 
+    string create_color_string(recursive_scan_ns::FilesystemEntry& entry, ColorScaleState& color_state, string& format_color) {
+        string color_str;
+
+        if (entry.size == 0)
+            color_str = color_state.DEFAULT_COLOR.str();
+        else
+            color_str = size2color(entry.size, color_state).str();
+        return vformat(format_color, make_format_args(color_str));
+    }
+
     class PlantUML_TreeSchema : public PlantUMLSchema {
     private:
         SchemaArguments& _schema_arguments = plantuml_schema_ns::schema_arguments;
@@ -35,20 +45,12 @@ namespace plantuml_schema_ns {
                     this->string_format.size_float = "({0:.2f} {1})";
             }
         }
-        string create_color_string(recursive_scan_ns::FilesystemEntry& entry) {
-            string color_str;
-
-            if (entry.size == 0)
-                color_str = this->_schema_arguments.color_state.DEFAULT_COLOR.str();
-            else
-                color_str = size2color(entry.size, this->_schema_arguments.color_state).str();
-            return vformat(this->string_format.color, make_format_args(color_str));
-        }
+        
         string format_entry(recursive_scan_ns::FilesystemEntry& entry) {
             string result = "";
 
             if (this->_schema_arguments.show_color) {
-                result += create_color_string(entry);
+                result += create_color_string(entry, this->_schema_arguments.color_state, this->string_format.color);
             }
             result += " ";
             result += vformat(this->string_format.name, make_format_args(entry.name));
@@ -114,15 +116,6 @@ namespace plantuml_schema_ns {
             // here must be logic, that creates format for each created string
             // and gather overall informationfrom the sequence of entries
         }
-        string create_color_string(recursive_scan_ns::FilesystemEntry& entry) {
-            string color_str;
-
-            if (entry.size == 0)
-                color_str = this->_schema_arguments.color_state.DEFAULT_COLOR.str();
-            else
-                color_str = size2color(entry.size, this->_schema_arguments.color_state).str();
-            return vformat(this->string_format.color, make_format_args(color_str));
-        }
         string construct_plantUML_string(uint8_t index, recursive_scan_ns::FilesystemEntry& entry) {
             string result = "state ";
 
@@ -146,7 +139,7 @@ namespace plantuml_schema_ns {
             result += " ";
 
             if (this->_schema_arguments.show_color) {
-                result += this->create_color_string(entry);
+                result += create_color_string(entry, this->_schema_arguments.color_state, this->string_format.color);
             }
 
             return result;
