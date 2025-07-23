@@ -37,10 +37,10 @@ namespace plantuml_schema_ns {
         }
         string format_entry(recursive_scan_ns::FilesystemEntry& entry) {
             string result = "";
-            string ada = "#adaada";
+            string color_str = size2color(entry.size, this->_schema_arguments.color_state).str();
 
             if (this->_schema_arguments.show_color) {
-                result += vformat(this->string_format.color, make_format_args(ada)); // was forced to do so, using regular std::format the same way as in the documentation (https://en.cppreference.com/w/cpp/utility/format/format.html) produce error "...`string_format` is not a constant expression...", idk why
+                result += vformat(this->string_format.color, make_format_args(color_str)); // was forced to do so, using regular std::format the same way as in the documentation (https://en.cppreference.com/w/cpp/utility/format/format.html) produce error "...`string_format` is not a constant expression...", idk why
             }
             result += " ";
             result += vformat(this->string_format.name, make_format_args(entry.name));
@@ -129,7 +129,8 @@ namespace plantuml_schema_ns {
             result += " ";
 
             if (this->_schema_arguments.show_color) {
-                result += vformat(this->string_format.color, make_format_args("#afdaed"));
+                string color_str = size2color(entry.size, this->_schema_arguments.color_state).str();
+                result += vformat(this->string_format.color, make_format_args(color_str));
             }
 
             return result;
