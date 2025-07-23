@@ -26,7 +26,8 @@ namespace plantuml_schema_ns {
         SchemaArguments& _schema_arguments = plantuml_schema_ns::schema_arguments;
         struct {
             string color = "";
-            string size = "";
+            string size_int = "";
+            string size_float = "";
             string name = "{0}";
         } string_format;
         vector<recursive_scan_ns::FilesystemEntry>& sequence;
@@ -39,9 +40,9 @@ namespace plantuml_schema_ns {
             }
             if (this->_schema_arguments.show_size) {
                 if (this->_schema_arguments.size_units == "B")
-                    this->string_format.size = "({0} {1})";
+                    this->string_format.size_int = "({0} {1})";
                 else
-                    this->string_format.size = "({0:.2f} {1})";
+                    this->string_format.size_float = "({0:.2f} {1})";
             }
         }
         
@@ -57,10 +58,10 @@ namespace plantuml_schema_ns {
             if (this->_schema_arguments.show_size) {
                 if (entry.size != 0) {
                     if (this->_schema_arguments.size_units == "B") {
-                        result += vformat(this->string_format.size, make_format_args(entry.size, this->_schema_arguments.size_units));
+                        result += vformat(this->string_format.size_int, make_format_args(entry.size, this->_schema_arguments.size_units));
                     } else {
                         double converted_size = convert_bytes(entry.size, this->_schema_arguments.size_units);
-                        result += vformat(this->string_format.size, make_format_args(converted_size, this->_schema_arguments.size_units));
+                        result += vformat(this->string_format.size_float, make_format_args(converted_size, this->_schema_arguments.size_units));
                     }
                 }
             }
@@ -193,7 +194,7 @@ namespace plantuml_schema_ns {
 
     SchemaArguments& get_schema_arguments(cli_arguments_ns::CliArguments& cli_arguments, vector<recursive_scan_ns::FilesystemEntry>& sequence) {
         SchemaArguments& schema_arguments = plantuml_schema_ns::schema_arguments;
-        schema_arguments.path = string(*cli_arguments.path);
+        schema_arguments.path = string(cli_arguments.path);
 
         if (cli_arguments.output_path != nullptr) {
             //schema_arguments.output_path = string(*cli_arguments.output_path);

@@ -113,7 +113,7 @@ namespace cli_arguments_ns {
                     }
                 }
             }
-        cli_arguments.path = new string(v_args[1]);
+        cli_arguments.path = string(v_args[1]);
     
         return cli_arguments;
     }
