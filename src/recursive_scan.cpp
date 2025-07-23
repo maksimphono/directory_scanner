@@ -16,7 +16,7 @@ namespace recursive_scan_ns {
         created->name = name;
         created->type = type;
         created->size = size;
-        cout << "Size: " << size << endl;
+        
 
         return created;
     }
@@ -41,11 +41,11 @@ namespace recursive_scan_ns {
 
                 if (depth > entries_stack.size()) {
                     // entered a directory
-                    cout << "Entering directory " << filesystem_entries[filesystem_entries.size() - 1].name << "\n";
+                    //cout << "Entering directory " << filesystem_entries[filesystem_entries.size() - 1].name << "\n";
                     entries_stack.push(filesystem_entries.size() - 1); // record index of the parent directory (so the last element in the sequence)
                 } else while (depth < entries_stack.size()) {
                     // exiting directory by popping entries from the stack
-                    cout << "Exeting directory " << filesystem_entries.at(entries_stack.top()).name << "\n";
+                    
                     top_entry_size = filesystem_entries[entries_stack.top()].size;
                     entries_stack.pop();
                     filesystem_entries[entries_stack.top()].size += top_entry_size;
@@ -62,25 +62,21 @@ namespace recursive_scan_ns {
                 }
 
                 filesystem_entries.push_back(*created_entry);
-                // print the top element in the stack
-                if (entries_stack.size()) {
-                    cout << filesystem_entries[entries_stack.size() - 1].name << " " << entries_stack.size() << endl;
-                }
             }
 
             while (1 < entries_stack.size()) {
                 // exiting directory by popping entries from the stack
-                cout << "Exeting directory " << filesystem_entries.at(entries_stack.top()).name << "\n";
                 top_entry_size = filesystem_entries[entries_stack.top()].size;
                 entries_stack.pop();
                 filesystem_entries[entries_stack.top()].size += top_entry_size;
             }
 
-            //filesystem_entries[0].size += filesystem_entries[entries_stack.top()].size;
+/*
             cout << "Got:\n";
             for (const auto& elem : filesystem_entries) {
                 cout << elem.name << " " << elem.type << ":" << (uint)elem.depth << " ";
             }
+*/
             return filesystem_entries;
 
         } catch (const fs::filesystem_error& e) {

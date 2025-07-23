@@ -90,16 +90,3 @@ namespace color_scale_ns {
 
     Color size2color(uintmax_t size, State& state);
 }
-
-/*
-using namespace color_scale_ns;
-int main() {
-    Color c1 = Color(2,3,4);
-    Color c2 = Color(1,2,3);
-    c2 = size2color(70);
-    c1 = (c1 - c2);
-    cout << Color("#ff0465").str();
-    //printf("#%d %d %d", c2.rgb()[0], c2.rgb()[1], c2.rgb()[2]);
-    return 0;
-}
-*/

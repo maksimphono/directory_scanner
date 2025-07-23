@@ -46,9 +46,4 @@ namespace plantuml_schema_ns {
     SchemaArguments& get_schema_arguments(cli_arguments_ns::CliArguments& cli_arguments);
 
     void create_schema(vector<recursive_scan_ns::FilesystemEntry>& sequence, cli_arguments_ns::CliArguments& cli_arguments, ostream& out_stream = cout);
-
-    string* construct_plantUML_tree_string(const recursive_scan_ns::FilesystemEntry& entry);
-
-    void create_tree_schema(vector<recursive_scan_ns::FilesystemEntry>&, ostream& out_stream = cout);
-    void create_box_schema(vector<recursive_scan_ns::FilesystemEntry>&, ostream& out_stream = cout);
 }

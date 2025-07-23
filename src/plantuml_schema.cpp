@@ -227,10 +227,7 @@ namespace plantuml_schema_ns {
 
             schema_arguments.color_state.min_mem_size = min_mem_size;
             schema_arguments.color_state.max_mem_size = max_mem_size;
-
-            cout << "Color state: " << schema_arguments.color_state.min_mem_size << schema_arguments.color_state.max_mem_size << schema_arguments.color_state.start_color.str() << schema_arguments.color_state.end_color.str() << endl;
-        }
-        cout << "Created schema_arguments: " << schema_arguments.output_type << " " << schema_arguments.size_units << endl;
+        }        
 
         return schema_arguments;
     }
