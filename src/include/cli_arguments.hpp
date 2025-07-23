@@ -40,7 +40,7 @@ namespace cli_arguments_ns {
         char size_units = '\0'; // b | k | m | g
         string start_color = ""; // blue
         string end_color = ""; // red
-        string* output_path = nullptr;
+        string output_path = "";
     } CliArguments;
 
     CliArguments& get_cli_arguments(int , const char**);

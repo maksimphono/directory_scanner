@@ -104,7 +104,7 @@ namespace cli_arguments_ns {
                             break;
 
                         case 'o': // output path was specified
-                            cli_arguments.output_path = new string(v_args[++i]);
+                            cli_arguments.output_path = string(v_args[++i]);
                             break;
 
                         default:

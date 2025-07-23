@@ -179,11 +179,11 @@ namespace plantuml_schema_ns {
         }
     };
 
-    OutputType extract_output_file_type(string* output_path) {
+    OutputType extract_output_file_type(string& output_path) {
         // cout << output_path->substr(output_path->rfind(".") + 1) << endl;
-        if (output_path == nullptr) return ASCII;
+        if (output_path == "") return ASCII;
 
-        string ext = output_path->substr(output_path->rfind(".") + 1);
+        string ext = output_path.substr(output_path.rfind(".") + 1);
 
         if (ext == "jpg" || ext == "jpeg") return JPG;
         if (ext == "png") return PNG;
@@ -196,7 +196,7 @@ namespace plantuml_schema_ns {
         SchemaArguments& schema_arguments = plantuml_schema_ns::schema_arguments;
         schema_arguments.path = string(cli_arguments.path);
 
-        if (cli_arguments.output_path != nullptr) {
+        if (cli_arguments.output_path != "") {
             //schema_arguments.output_path = string(*cli_arguments.output_path);
             schema_arguments.output_type = extract_output_file_type(cli_arguments.output_path);
         } else {
