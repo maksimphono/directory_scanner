@@ -1,0 +1,8 @@
+#!/bin/bash
+
+# Initialize variables
+
+CODE_CREATOR="/home/dist/code_creator.o"
+PLANTUML_SCRIPT="/home/dist/plantuml"
+
+$CODE_CREATOR /data/target -t b | $PLANTUML_SCRIPT

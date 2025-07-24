@@ -1,0 +1,24 @@
+@startuml
+state "root" as S0 {
+state "d1" as S1 {
+state "d11" as S2 {
+state "f111" as S3 
+state "f112" as S4 
+}
+state "ln_d11" as S5 
+}
+state "d 2" as S6 {
+state "d21" as S7 {
+state "d211" as S8 {
+state "d2111" as S9 {
+state "f21-3" as S10 
+state "f211" as S11 
+state "f212" as S12 
+}
+}
+state "a211" as S13 
+}
+}
+state "f1" as S14 
+}
+@enduml

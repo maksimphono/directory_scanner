@@ -1,0 +1,5 @@
+#!/bin/bash
+
+ORIGINAL_ARGS=("$@")
+
+docker run --rm -v "$1:/data" dir_scanner_img:latest /home/dist/main ${ORIGINAL_ARGS[@]}
