@@ -36,14 +36,21 @@ RUN apt-get update && \
 
 RUN apt update
 
-RUN curl -LO "https://github.com/plantuml/plantuml/releases/download/v1.2025.4/plantuml-gplv2-1.2025.4.jar" && \
-    mv "plantuml-gplv2-1.2025.4.jar" /usr/local/bin/plantuml.jar
-
 WORKDIR /home/dist
 COPY ./sh /home/dist
 
-COPY --from=builder /home/code_creator.o /home/dist/code_creator.o
-RUN chmod +x /home/dist/code_creator.o
+#RUN curl -LO "https://github.com/plantuml/plantuml/releases/download/v1.2025.4/plantuml-gplv2-1.2025.4.jar" && \
+#    mv "plantuml-gplv2-1.2025.4.jar" /home/dist/plantuml.jar
 
-#RUN mv /home/code_creator.o /home/dist/
-ENTRYPOINT ["/home/dist/main"]
+COPY --from=builder /home/code_creator.o /home/dist/code_creator.o
+RUN chmod +x /home/dist
+RUN chmod +x /home/dist/code_creator.o
+RUN chmod 777 /home/dist/plantuml.jar
+
+
+# INFO: Working command so far:
+# docker run -it --rm -v "/home/trukhinmaksim/Maksim/Projects/cli/Project_2_directory-scanner:/data/target/" dir_scanner_img:v11 /bin/bash -c "cat /home/dist/s.puml | java -Djava.awt.headless=true -jar /home/dist/plantuml.jar -pipe > ppp.png && mv ppp.png /data/target"
+
+
+CMD ["/bin/bash"]
+#ENTRYPOINT ["/home/dist/main"]
