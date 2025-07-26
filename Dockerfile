@@ -35,6 +35,6 @@ WORKDIR /home/dist
 COPY ./sh/plantuml.jar /home/dist/plantuml.jar
 
 COPY --from=builder /home/code_creator.o /home/dist/code_creator.o
-RUN chmod +x /home/dist
+
 RUN chmod +x /home/dist/code_creator.o
 RUN chmod +x /home/dist/plantuml.jar
