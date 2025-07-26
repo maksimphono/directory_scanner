@@ -2,16 +2,21 @@
 
 # Initialize variables
 
-INPUT_DIR_PATH=/home/trukhinmaksim/Maksim/Projects/cli/Project_2_directory-scanner/root
-INPUT_DIR_NAME=root
+INPUT_DIR_PATH=$1 # /home/trukhinmaksim/Maksim/Projects/cli/Project_2_directory-scanner/root
+INPUT_DIR_NAME=$(basename "$INPUT_DIR_PATH")
 
-IMG_OUTPUT_DIR_PATH=/home/trukhinmaksim/Maksim/Projects/cli/Project_2_directory-scanner/output
-IMG_OUTPUT_NAME=schm.png
+IMG_OUTPUT_PATH=$2 # /home/trukhinmaksim/Maksim/Projects/cli/Project_2_directory-scanner/output/schm.png
+IMG_OUTPUT_DIR_PATH=$(dirname "$IMG_OUTPUT_PATH")
+IMG_OUTPUT_NAME=$(basename "$IMG_OUTPUT_PATH")
 
 CODE_CREATOR_PATH="/home/dist/code_creator.o"
 PLANTUML_JAR_PATH="/home/dist/plantuml.jar"
 
-COMMAND="$CODE_CREATOR_PATH /data/$INPUT_DIR_NAME -b --color '#ff0000-#0000ff' | java -Djava.awt.headless=true -jar $PLANTUML_JAR_PATH -pipe > /output/$IMG_OUTPUT_NAME"
+shift
+
+ORIGINAL_ARGS=("$@")
+
+COMMAND="$CODE_CREATOR_PATH /data/$INPUT_DIR_NAME ${ORIGINAL_ARGS[@]} | java -Djava.awt.headless=true -jar $PLANTUML_JAR_PATH -pipe > /output/$IMG_OUTPUT_NAME"
 
 
 
@@ -22,3 +27,12 @@ docker run \
     -v "$IMG_OUTPUT_DIR_PATH:/output" \
     dir_scanner_img:v11 \
     /bin/bash -c "$COMMAND"
+
+
+if [ $? -eq 0 ]; then
+    echo "Finished successfully."
+else
+    echo "Failed. Please check the output for errors."
+    exit 1
+fi
+echo "--- Run Complete ---"
