@@ -44,8 +44,8 @@ using namespace std;
 #define THROW_WRONG_TYPE_EXP \
     throw ArgumentException("type (-t) argument must be set to 'b' (box) or 't' (tree)");
 
-#define THROW_WRONG_PATH_EXP \
-    throw ArgumentException("Input and output paths must be in a Unix style");
+#define THROW_WRONG_PATH_EXP(path) \
+    throw ArgumentException(vformat("Path \"{0}\" is invalid. Input and output paths must be in a Unix style", make_format_args(path)));
 
 #define THROW_UNKNOWN_ARGUMENT_EXP(raw_argument) \
     throw ArgumentException(vformat("Unknown argument {0}!! Please, check specified arguments again", make_format_args(raw_argument)));
@@ -102,7 +102,7 @@ namespace cli_arguments_ns {
         smatch match_info;
 
         if (!regex_match(value, match_info, pattern)) {
-            THROW_WRONG_PATH_EXP;
+            THROW_WRONG_PATH_EXP(value);
         }
     }
 
