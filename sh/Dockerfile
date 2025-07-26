@@ -43,6 +43,3 @@ COPY --from=builder /home/code_creator.o /home/dist/code_creator.o
 RUN chmod +x /home/dist
 RUN chmod +x /home/dist/code_creator.o
 RUN chmod 777 /home/dist/plantuml.jar
-
-CMD ["/bin/bash"]
-#ENTRYPOINT ["/home/dist/main"]
