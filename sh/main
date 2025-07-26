@@ -53,7 +53,7 @@ docker run \
     --rm \
     -v "$INPUT_DIR_PATH:/data/$INPUT_DIR_NAME" \
     -v "$IMG_OUTPUT_DIR_PATH:/output" \
-    dir_scanner_img:v0.0.12 \
+    dir_scanner_img:latest \
     /bin/bash -c "$COMMAND"
 
 

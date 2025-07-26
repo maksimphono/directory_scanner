@@ -8,7 +8,7 @@ echo "--- Preparing to install ---"
 echo "Attempting to pull Docker image: ${IMAGE_NAME}:${IMAGE_TAG}"
 
 if ! command -v docker &> /dev/null; then
-    echo "Error: Docker is can't be found!"
+    echo "Error: Docker can not be found!"
     echo "Please install Docker on your machine (https://docs.docker.com/engine/install/)"
     exit 1
 fi
