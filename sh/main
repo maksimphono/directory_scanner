@@ -19,6 +19,7 @@ fi
 
 shift
 ORIGINAL_ARGS=("$@")
+IMG_OUTPUT_PATH="$INPUT_DIR_NAME.schema"
 
 while [[ "$#" -gt 0 ]]; do
     case "$1" in
