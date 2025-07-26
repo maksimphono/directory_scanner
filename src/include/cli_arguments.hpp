@@ -46,5 +46,8 @@ namespace cli_arguments_ns {
     void set_argument_color(CliArguments& cli_arguments, const char** v_args, uint8_t& i);
     void set_argument_type(CliArguments& cli_arguments, const char** v_args, uint8_t& i);
 
+    void assert_type(string value);
+    void assert_path(string value);
+
     CliArguments& get_cli_arguments(int , const char**);
 }
