@@ -47,10 +47,5 @@ RUN chmod +x /home/dist
 RUN chmod +x /home/dist/code_creator.o
 RUN chmod 777 /home/dist/plantuml.jar
 
-
-# INFO: Working command so far:
-# docker run -it --rm -v "/home/trukhinmaksim/Maksim/Projects/cli/Project_2_directory-scanner:/data/target/" dir_scanner_img:v11 /bin/bash -c "cat /home/dist/s.puml | java -Djava.awt.headless=true -jar /home/dist/plantuml.jar -pipe > ppp.png && mv ppp.png /data/target"
-
-
 CMD ["/bin/bash"]
 #ENTRYPOINT ["/home/dist/main"]
