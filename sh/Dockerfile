@@ -37,10 +37,7 @@ RUN apt-get update && \
 RUN apt update
 
 WORKDIR /home/dist
-COPY ./sh /home/dist
-
-#RUN curl -LO "https://github.com/plantuml/plantuml/releases/download/v1.2025.4/plantuml-gplv2-1.2025.4.jar" && \
-#    mv "plantuml-gplv2-1.2025.4.jar" /home/dist/plantuml.jar
+COPY ./sh/plantuml.jar /home/dist/plantuml.jar
 
 COPY --from=builder /home/code_creator.o /home/dist/code_creator.o
 RUN chmod +x /home/dist
