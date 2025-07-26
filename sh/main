@@ -48,7 +48,6 @@ PLANTUML_JAR_PATH="/home/dist/plantuml.jar"
 COMMAND="$CODE_CREATOR_PATH /data/$INPUT_DIR_NAME ${ORIGINAL_ARGS[@]} | java -Djava.awt.headless=true -jar $PLANTUML_JAR_PATH -pipe > /output/$IMG_OUTPUT_NAME"
 
 
-
 docker run \
     -it \
     --rm \
