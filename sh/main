@@ -1,19 +1,49 @@
 #!/bin/bash
 
+set -euo pipefail
+
+if [[ "$#" -eq 0 ]]; then
+    echo "Please provide path a to directory as a first argument"
+    exit 1
+fi
+
 # Initialize variables
 
 INPUT_DIR_PATH=$1 # /home/trukhinmaksim/Maksim/Projects/cli/Project_2_directory-scanner/root
 INPUT_DIR_NAME=$(basename "$INPUT_DIR_PATH")
 
-IMG_OUTPUT_PATH=$2 # /home/trukhinmaksim/Maksim/Projects/cli/Project_2_directory-scanner/output/schm.png
+if [[ ! -d "$INPUT_DIR_PATH" ]]; then
+    echo "Provided directory $INPUT_DIR_PATH can't be found"
+    exit 1
+fi 
+
+shift
+ORIGINAL_ARGS=("$@")
+
+while [[ "$#" -gt 0 ]]; do
+    case "$1" in
+        -o)
+            if [[ -n "$2" && ! "$2" =~ ^- ]]; then
+                IMG_OUTPUT_PATH=$2
+                shift # Consume the argument value
+            else
+                echo "Error: Argument for $1 is missing or invalid."
+                exit 1
+            fi
+            ;;
+        *)
+            #echo "Unknown parameter passed: $1"
+            ;;
+    esac
+    shift # Consume the option
+done
+
+# IMG_OUTPUT_PATH=$2 # /home/trukhinmaksim/Maksim/Projects/cli/Project_2_directory-scanner/output/schm.png
 IMG_OUTPUT_DIR_PATH=$(dirname "$IMG_OUTPUT_PATH")
 IMG_OUTPUT_NAME=$(basename "$IMG_OUTPUT_PATH")
 
 CODE_CREATOR_PATH="/home/dist/code_creator.o"
 PLANTUML_JAR_PATH="/home/dist/plantuml.jar"
-
-shift
-ORIGINAL_ARGS=("$@")
 
 COMMAND="$CODE_CREATOR_PATH /data/$INPUT_DIR_NAME ${ORIGINAL_ARGS[@]} | java -Djava.awt.headless=true -jar $PLANTUML_JAR_PATH -pipe > /output/$IMG_OUTPUT_NAME"
 
