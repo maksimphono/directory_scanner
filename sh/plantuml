@@ -1,8 +1,0 @@
-#!/bin/bash
-
-PLANTUML_SCRIPT=" java -jar /home/dist/plantuml.jar -pipe"
-#ORIGINAL_ARGS=("$@")
-
-# export GRAPHVIZ_DOT="/home/trukhinmaksim/Maksim/Projects/cli/Project_2_directory-scanner/src/sh/dot"
-
-$PLANTUML_SCRIPT > out.png # ${ORIGINAL_ARGS[@]}
