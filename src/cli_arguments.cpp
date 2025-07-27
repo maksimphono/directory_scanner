@@ -10,35 +10,6 @@
 
 using namespace std;
 
-/*
-    Arguments description:
-
-    -t      b | t (t by default)    type of the resulting schema. Can be tree (t) or box (b)
-    -b      boolean, if set - size of each object (in bytes) will be printed alonside the name
-    -k      boolean, if set - size of each object (in kilobytes) will be printed alonside the nameboolean, if set - size of each object (in kilobytes) will be printed alonside the name
-    -m      boolean, if set - size of each object (in megabytes) will be printed alonside the name
-    -g      boolean, if set - size of each object (in gigabytes) will be printed alonside the name    
-    --color string of form "#xxx-#yyy"      color scale, which will be applyed to color the objects according to their sizes
-        if value wan't specified, default "#00f-#f00" (blue-red) will be used
-    -o      string,     path to a file (can be JPG, PNG, SVG, PDF or TXT for ascii-style scheme) where resulting PlantUML schema will be drawn, 
-        if file was provide {
-            return this->_message.c_str();
-        }d without extension or extension is other than these, ASCII scheme will be written
-
-    size will be shown only if corresponding argument (-b, -k, -m, -g) is passed
-    if output file wasn't provided - resulting schema will be shown as PNG image without saving
-    if same argument was provided with different values, only the last value will be used
-
-    Example:
-
-        $ main /path/to/dir -t b -k -m --color #ada-#f00 -o /path/to/output/schema.pdf
-
-        Will create box schema of /path/to/dir directory, 
-        specifying size of each object in megabytes, 
-        will apply color scale from #ada (min value) to #f00 (max value)
-        and save resulting schema as PDF into the file /path/to/output/schema.pdf
-*/
-
 #define THROW_COLOR_RANGE_EXP \
     throw ArgumentException("Color range (--color) must be specified in form of '#xxxxxx-#xxxxxx', where x is a hexadecimal digit (0-f)");
 
