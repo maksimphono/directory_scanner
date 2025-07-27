@@ -2,7 +2,7 @@
 set -euo pipefail
 
 IMAGE_NAME=""
-IMAGE_TAG="${1:-latest}" # Default to 'latest'
+IMAGE_TAG=v1.0.0 # "${1:-latest}"
 
 echo "--- Preparing to install ---"
 echo "Attempting to pull Docker image: ${IMAGE_NAME}:${IMAGE_TAG}"

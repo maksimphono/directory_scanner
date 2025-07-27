@@ -62,9 +62,9 @@ Directory scanner. Recursively scans directory, provided by path as the first ar
   --help                        Show this message
 ```
 
-## PS
+## 🛈 PS
 If you want to report a bug 🐛 please submit a Github issue with description. If you can improve the sourc code, please submit a pull request, I will be more than happy to get some guidelines and improve the app and my skills😃.
 
-## About author
+## 👨 About author
 Hi, my name is Max, I'm a programmer from Russia, I enjoy spending time coding and creating programs like this one. This is my first time creating something that actually can be used in real life and provide actual convenience for the user. I know, the code is still a little bit messy, but I was trying my best, if you can improve it, be my guest and submit a pull request.
 Anyway, please enjoy my app. 😇
