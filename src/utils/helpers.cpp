@@ -10,7 +10,7 @@ string repeat(string str, uint8_t times) { // repeat srting n times
     return result;
 }
 
-inline double bytes2KB(uintmax_t& bytes_num) { return (double)bytes_num / 10; }
+inline double bytes2KB(uintmax_t& bytes_num) { return (double)bytes_num / 1024; }
 
 inline double bytes2MB(uintmax_t& bytes_num) { return (double)bytes_num / 1048576; }
 
