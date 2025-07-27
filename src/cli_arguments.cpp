@@ -67,8 +67,11 @@ namespace cli_arguments_ns {
     CliArguments cli_arguments;
 
     void throw_usage_message() {
-        ifstream file("../USAGE.txt");
-        char* message = new char[1000];
+        ifstream file("../USAGE.txt", ios::binary | std::ios::ate);
+        uint size = file.tellg();
+        file.seekg(0);
+
+        char* message = new char[size + 1];
         file.read(message, 1000);
         const ArgumentException exp(message);
         file.close();
