@@ -76,6 +76,7 @@ namespace plantuml_schema_ns {
         void print(ostream& stream) override {
             // will output entire plantuml code into the provided stream
             stream << "@startmindmap\n";
+            stream << this->header << endl;
 
             for (auto& plantuml_entry : this->sequence) {
                 stream
@@ -111,6 +112,8 @@ namespace plantuml_schema_ns {
                 else
                     this->string_format.size = "({0:.2f} {1})";
             }
+
+            this->header = "hide empty description";
         }
         string construct_plantUML_string(uint8_t index, recursive_scan_ns::FilesystemEntry& entry) {
             string result = "state ";
@@ -142,6 +145,7 @@ namespace plantuml_schema_ns {
         }
         void print(ostream& stream) override {
             stream << "@startuml\n";
+            stream << this->header << endl;
 
             recursive_scan_ns::FilesystemEntry root = this->sequence.front();
             stream << this->construct_plantUML_string(0, root);

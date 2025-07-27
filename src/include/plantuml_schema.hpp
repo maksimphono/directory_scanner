@@ -38,6 +38,7 @@ namespace plantuml_schema_ns {
     };
     class PlantUMLSchema : public PlantUMLSchema_abstract {
     public:
+        string header = "";
         void print(ostream& stream) override {return;}
     };
 
