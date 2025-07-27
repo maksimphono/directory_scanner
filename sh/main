@@ -9,7 +9,7 @@ fi
 
 # Initialize variables
 
-INPUT_DIR_PATH=$1 # /home/trukhinmaksim/Maksim/Projects/cli/Project_2_directory-scanner/root
+INPUT_DIR_PATH=$1
 INPUT_DIR_NAME=$(basename "$INPUT_DIR_PATH")
 
 if [[ ! -d "$INPUT_DIR_PATH" ]]; then
@@ -19,7 +19,7 @@ fi
 
 shift
 ORIGINAL_ARGS=("$@")
-IMG_OUTPUT_PATH="$INPUT_DIR_NAME.schema"
+IMG_OUTPUT_PATH="$INPUT_DIR_NAME.png"
 
 while [[ "$#" -gt 0 ]]; do
     case "$1" in
@@ -36,17 +36,25 @@ while [[ "$#" -gt 0 ]]; do
             #echo "Unknown parameter passed: $1"
             ;;
     esac
-    shift # Consume the option
+    shift
 done
 
-# IMG_OUTPUT_PATH=$2 # /home/trukhinmaksim/Maksim/Projects/cli/Project_2_directory-scanner/output/schm.png
 IMG_OUTPUT_DIR_PATH=$(dirname "$IMG_OUTPUT_PATH")
 IMG_OUTPUT_NAME=$(basename "$IMG_OUTPUT_PATH")
+IMG_OUTPUT_EXTENSION="${IMG_OUTPUT_NAME##*.}"
+
+if [[ ! "$IMG_OUTPUT_EXTENSION" == "png" && \
+      ! "$IMG_OUTPUT_EXTENSION" == "jpg" && \
+      ! "$IMG_OUTPUT_EXTENSION" == "jpeg" && \
+      ! "$IMG_OUTPUT_EXTENSION" == "svg" ]]; then
+    echo "Sorry, only following formats are supported: png, jpg, jpeg, svg"
+    IMG_OUTPUT_EXTENSION="png"
+fi
 
 CODE_CREATOR_PATH="/home/dist/code_creator.o"
 PLANTUML_JAR_PATH="/home/dist/plantuml.jar"
 
-COMMAND="$CODE_CREATOR_PATH /data/$INPUT_DIR_NAME ${ORIGINAL_ARGS[@]} | java -Djava.awt.headless=true -jar $PLANTUML_JAR_PATH -pipe > /output/$IMG_OUTPUT_NAME"
+COMMAND="$CODE_CREATOR_PATH /data/$INPUT_DIR_NAME ${ORIGINAL_ARGS[@]} | java -Djava.awt.headless=true -jar $PLANTUML_JAR_PATH -t$IMG_OUTPUT_EXTENSION -pipe > /output/$IMG_OUTPUT_NAME"
 
 
 docker run \
