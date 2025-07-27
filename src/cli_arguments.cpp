@@ -68,6 +68,11 @@ namespace cli_arguments_ns {
 
     void throw_usage_message() {
         ifstream file("../USAGE.txt", ios::binary | std::ios::ate);
+        if (!file.is_open()) {
+            throw ArgumentException("Sorry, seem like the 'USAGE.txt' file is missing, please refer to the README.md file or github page for instructions");
+            exit(1);
+        }
+        
         uint size = file.tellg();
         file.seekg(0);
 
