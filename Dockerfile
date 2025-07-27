@@ -9,6 +9,7 @@ RUN apt-get update && \
 WORKDIR /home/src
 
 COPY ./src /home/src
+COPY ./USAGE.txt /home/USAGE.txt
 # Compile the source code
 RUN g++ -std=c++20 cli_arguments.cpp recursive_scan.cpp color_scale.cpp plantuml_schema.cpp main.cpp -o /home/code_creator.o && \
     rm -rf /home/src
@@ -33,6 +34,7 @@ RUN apt update
 
 WORKDIR /home/dist
 COPY ./sh/plantuml.jar /home/dist/plantuml.jar
+COPY ./USAGE.txt /home/USAGE.txt
 
 COPY --from=builder /home/code_creator.o /home/dist/code_creator.o
 

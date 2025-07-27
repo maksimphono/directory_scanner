@@ -43,6 +43,8 @@ namespace cli_arguments_ns {
         string output_path = "";
     } CliArguments;
 
+    void throw_usage_message();
+
     void set_argument_color(CliArguments& cli_arguments, const char** v_args, uint8_t& i);
     void set_argument_type(CliArguments& cli_arguments, const char** v_args, uint8_t& i);
 

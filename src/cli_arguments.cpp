@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 #include <string>
 #include <cstring>
 #include <cstdint>
@@ -47,8 +48,8 @@ using namespace std;
 #define THROW_WRONG_PATH_EXP(path) \
     throw ArgumentException(vformat("Path \"{0}\" is invalid. Input and output paths must be in a Unix style", make_format_args(path)));
 
-#define THROW_UNKNOWN_ARGUMENT_EXP(raw_argument) \
-    throw ArgumentException(vformat("Unknown argument {0}!! Please, check specified arguments again", make_format_args(raw_argument)));
+//#define THROW_UNKNOWN_ARGUMENT_EXP(raw_argument) \
+//    throw ArgumentException(vformat("Unknown argument {0}!! Please, check specified arguments again", make_format_args(raw_argument)));
 
 namespace cli_arguments_ns {
     class ArgumentException : public exception {
@@ -64,6 +65,16 @@ namespace cli_arguments_ns {
     };
 
     CliArguments cli_arguments;
+
+    void throw_usage_message() {
+        ifstream file("../USAGE.txt");
+        char* message = new char[1000];
+        file.read(message, 1000);
+        const ArgumentException exp(message);
+        file.close();
+        delete message;
+        throw exp;
+    }
 
     void set_argument_color(CliArguments& cli_arguments, const char** v_args, uint8_t& i) {
         string raw_argument = string(v_args[i]);
@@ -125,6 +136,9 @@ namespace cli_arguments_ns {
                 else if (arg_name == "type") {
                     set_argument_type(cli_arguments, v_args, i);
                 }
+                else if (arg_name == "help") {
+                    throw_usage_message();
+                }
             } else if (raw_argument[0] == '-') {
                 // this is an argument declaration
                 const char arg_name = raw_argument[1];
@@ -148,7 +162,7 @@ namespace cli_arguments_ns {
                         break;
 
                     default:
-                        THROW_UNKNOWN_ARGUMENT_EXP(raw_argument);
+                        throw_usage_message();
                 }
             }
         }
