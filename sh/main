@@ -62,7 +62,7 @@ docker run \
     --rm \
     -v "$INPUT_DIR_PATH:/data/$INPUT_DIR_NAME" \
     -v "$IMG_OUTPUT_DIR_PATH:/output" \
-    dir_scanner_img:v1.0.0 \
+    maksimphono/directory_scanner:v1.0.0 \
     /bin/bash -c "$COMMAND"
 
 echo "--- Run Complete ---"
