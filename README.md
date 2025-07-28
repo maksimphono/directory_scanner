@@ -42,9 +42,9 @@ To get started, just clone the repo (or just copy /sh/install and /sh/main files
     sudo ln -s ./main /usr/local/bin/dir_scanner_or_whatever
     ```
 
-You can also build the docker image youself, in that case don't bother running 'install' script, build the image and name it "dir_scanner_img:latest", then you should be able to run the 'main' script
+You can also build the docker image youself, in that case don't bother running 'install' script, build the image and name it "maksimphono/directory_scanner:v1.0.0", then you should be able to run the 'main' script
 ```bash
-docker build -t dir_scanner_img:latest -f ./Dockerfile .
+docker build -t maksimphono/directory_scanner:v1.0.0 -f ./Dockerfile .
 ```
 
 
