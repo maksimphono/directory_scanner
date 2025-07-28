@@ -1,13 +1,14 @@
 #!/bin/bash
 set -euo pipefail
 
-IMAGE_NAME=""
+IMAGE_NAME="maksimphono/directory_scanner"
 IMAGE_TAG=v1.0.0 # "${1:-latest}"
 
 echo "--- Preparing to install ---"
 echo "Attempting to pull Docker image: ${IMAGE_NAME}:${IMAGE_TAG}"
 
 if ! command -v docker &> /dev/null; then
+    echo -e "\n"
     echo "Error: Docker can not be found!"
     echo "Please install Docker on your machine (https://docs.docker.com/engine/install/)"
     exit 1
@@ -15,12 +16,14 @@ fi
 
 docker pull "${IMAGE_NAME}:${IMAGE_TAG}"
 
+echo -e "\n"
 if [ $? -eq 0 ]; then
     echo "Image pulled successfully!"
-    echo "You can now run the main script using: ./main [path] [arguments]"
+    echo "You can now run the main script using: ./main [path] [arguments] (refer to the README.md for more instructions)"
     echo "You can also add a symlink to the main file using: ln -s ./main dir-scanner-or-whatever"
 else
     echo "Error: Failed to pull Docker image. Please check your internet connection or Docker setup."
     exit 1
 fi
+echo -e "\n"
 echo "--- Installation Complete ---"

@@ -7,6 +7,9 @@
 Simple console app for Linux, that will scan given directory (provided by path) recursively and creates image of the directory tree using "PlantUML".
 Resulting image is saved to the file, provided by output path, or created automatically.
 
+**Checkout links:**
+* [Dockerhub image](https://hub.docker.com/repository/docker/maksimphono/directory_scanner/general)
+
 ## 🚀 Getting started
 
 To get started, just clone the repo (or just copy /sh/install and /sh/main files) and run "install" script (you probably need to change permissions), it will pull the docker image and you should be good to go.
