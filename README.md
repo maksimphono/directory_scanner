@@ -61,7 +61,7 @@ Directory scanner. Recursively scans directory, provided by path as the first ar
   -m                            Output directory and files sizes in megabytes
   -g                            Output directory and files sizes in gigabytes
   -o [/path/to/file.png]        Specify output file path (where image schema will be saved), currently only following file formats supported: png, jpeg, jpg, svg
-  --color [#xxxxxx-#xxxxxx]     Color range, will be applied to files and directories on the image to mark them with color within range according to size
+  --color "[#xxxxxx-#xxxxxx]"   Color range, will be applied to files and directories on the image to mark them with color within range according to size
   --help                        Show this message
 ```
 
