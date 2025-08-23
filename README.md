@@ -29,13 +29,12 @@ To get started, just clone the repo (or just copy /sh/install and /sh/main files
 2. **Change permissions and install** Run instalation script, it will pull docker image:
     ```bash
     sudo chmod +x install main
-    ./install
+    sudo install v1.1.0
     ```
 
 3. **Run the program** That's pretty much it, just run the 'main' script, providing path to the directory and options
     ```bash
     ./main /path/to/directory
-    ./install
     ```
 4. **(Optional) Create a symlink** For convenience you can create a symlink in your /usr/local/bin directory for easy access to the 'main' script from the terminal
     ```bash
@@ -44,8 +43,9 @@ To get started, just clone the repo (or just copy /sh/install and /sh/main files
 
 You can also build the docker image youself, in that case don't bother running 'install' script, build the image and name it "dir_scanner_img:latest", then you should be able to run the 'main' script
 ```bash
-docker build -t dir_scanner_img:latest -f ./Dockerfile .
+docker build -t dir_scanner_img:latest -f ./Dockerfile_production .
 ```
+Checkout **./Dockerfile_production** file for reference
 
 
 ## ▶️ Usage
