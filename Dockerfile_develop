@@ -1,0 +1,15 @@
+# Dockerfile
+
+FROM alpine:latest
+
+RUN apk update && \
+    apk add git \
+        g++ \
+        graphviz \
+        openjdk17-jre-headless \
+        curl \
+        libstdc++
+
+WORKDIR /home/work
+
+CMD ["/bin/sh"]

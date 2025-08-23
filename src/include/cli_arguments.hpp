@@ -32,6 +32,8 @@ using namespace std;
         and save resulting schema as PDF into the file /path/to/output/schema.pdf
 */
 
+typedef unsigned int uint;
+
 namespace cli_arguments_ns {
     typedef struct {
         // dedicated structure, that will store values of every arguments
