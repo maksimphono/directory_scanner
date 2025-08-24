@@ -9,6 +9,8 @@ Resulting image is saved to the file, provided by output path, or created automa
 
 **Checkout links:**
 * [Dockerhub image](https://hub.docker.com/repository/docker/maksimphono/directory_scanner/general)
+* [GitHub repo](https://github.com/maksimphono/directory_scanner)
+* [GitLab repo](https://gitlab.com/maksimphono/directory_scanner)
 
 ## 🚀 Getting started
 
