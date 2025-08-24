@@ -2,7 +2,7 @@
 set -euo pipefail
 
 IMAGE_NAME="maksimphono/directory_scanner"
-IMAGE_TAG=v1.0.0 # "${1:-latest}"
+IMAGE_TAG="${1:-latest}"
 
 echo "--- Preparing to install ---"
 echo "Attempting to pull Docker image: ${IMAGE_NAME}:${IMAGE_TAG}"
@@ -25,5 +25,8 @@ else
     echo "Error: Failed to pull Docker image. Please check your internet connection or Docker setup."
     exit 1
 fi
+
+cp "$(pwd)/main" /usr/local/bin/dirscan
+
 echo -e "\n"
-echo "--- Installation Complete ---"
+echo "--- Instalation finished ---"

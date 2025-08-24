@@ -7,6 +7,8 @@
 
 using namespace std;
 
+typedef unsigned int uint;
+
 namespace fs = filesystem;
 
 namespace recursive_scan_ns {
