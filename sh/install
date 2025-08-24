@@ -25,5 +25,8 @@ else
     echo "Error: Failed to pull Docker image. Please check your internet connection or Docker setup."
     exit 1
 fi
+
+cp "$(pwd)/main" /usr/local/bin/dirscan
+
 echo -e "\n"
-echo "--- Installation Complete ---"
+echo "--- Instalation finished ---"
