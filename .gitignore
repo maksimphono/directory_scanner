@@ -1,6 +1,6 @@
 test
 exec
-root
+root*
 src/sh/plantuml.jar
 src/sh/*.o
 output

@@ -22,7 +22,8 @@ FROM alpine:latest as runner
 RUN apk update && \
     apk add libstdc++ \
             graphviz \
-	        openjdk17-jre
+	        openjdk17-jre \
+            font-noto-cjk
 
 WORKDIR /home/dist
 COPY ./sh/plantuml.jar /home/dist/plantuml.jar
